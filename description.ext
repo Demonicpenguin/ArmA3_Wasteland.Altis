@@ -124,11 +124,6 @@ class CfgDebriefing
 
 class CfgFunctions
 {
-	class HAL
-	{
-		#include "HALs\Addons\killfeed\functions.cpp"
-	};
-	
 	class A3W
 	{
 		#include "client\CfgFunctions.hpp"
@@ -159,6 +154,7 @@ class CfgFunctions
 	#include "addons\GOM\functions\GOM_fnc_functions.hpp"
 	#include "addons\Vcom\cfgFunctions.hpp"
     #include "LARs\override_VA_templates\functions\functions.hpp"	
+	#include "HALs\Addons\killfeed\functions.cpp"
 
 	//AJ Begin
 	class armajunkies
