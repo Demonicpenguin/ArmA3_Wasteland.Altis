@@ -11,6 +11,7 @@
 #define hud_vehicle_idc 3601
 #define hud_activity_icon_idc 3602
 #define hud_activity_textbox_idc 3603
+#define hud_server_idc 3604
 
 scriptName "playerHud";
 
@@ -85,6 +86,16 @@ _displayTerritoryActivity =
 	[_topLeftIconText, _activityMessage]
 };
 
+/*/===== Armor Camonets (Tanks DLC)/*/
+// by Quiksilver
+private ['_cursorObject','_cursorDistance','_animationSource','_animationSources','_array'];
+private _QS_action_camonetArmor = nil;
+_QS_action_camonetArmor_textA = 'Deploy camo net';
+_QS_action_camonetArmor_textB = 'Remove camo net';
+_QS_action_camonetArmor_array = [_QS_action_camonetArmor_textA,{_this spawn (missionNamespace getVariable 'QS_fnc_clientInteractCamoNet')},[objNull,0],-10,FALSE,TRUE,'','TRUE',-1,FALSE,''];
+private _QS_interaction_camonetArmor = FALSE;
+_QS_action_camonetArmor_anims = ['showcamonethull','showcamonetcannon','showcamonetcannon1','showcamonetturret','showcamonetplates1','showcamonetplates2'];
+private _QS_action_camonetArmor_vAnims = [];
 _survivalSystem = ["A3W_survivalSystem"] call isConfigOn;
 _unlimitedStamina = ["A3W_unlimitedStamina"] call isConfigOn;
 _atmEnabled = ["A3W_atmEnabled"] call isConfigOn;
@@ -105,6 +116,15 @@ while {true} do
 	_hudVehicle = _ui displayCtrl hud_vehicle_idc;
 	_hudActivityIcon = _ui displayCtrl hud_activity_icon_idc;
 	_hudActivityTextbox = _ui displayCtrl hud_activity_textbox_idc;
+/*	_hudServerTextbox = _ui displayCtrl hud_server_idc;
+	
+	//BEGIN AJ
+	//_serverString = format ["<t color='#A0FFFFFF'>Server: [EU] Armajunkies #1 Wasteland Altis</t>"];
+    _serverString = format ["<t color='#A0FFFFFF'>[EU]Armajunkies #%1 Wasteland %2</t>", call A3W_extDB_ServerID, worldName];
+	_serverString = format ["%1<br/><t color='#A0FFFFFF'>Teamspeak: ts3.armajunkies.de<br/>Website: armajunkies.de</t><br/><t color='#A0FFFFFF'>Facebook: Armajunkies</t>",_serverString];
+	_hudServerTextbox ctrlSetStructuredText parseText _serverString;
+	_hudServerTextbox ctrlCommit 0;
+	//END AJ
 
 	//Calculate Health 0 - 100
 	_health = ((1 - damage player) * 100) max 0;
@@ -133,9 +153,9 @@ while {true} do
 	_lastHealthReading = _health;
 
 	// Icons in bottom right
-
+*/
 	_strArray = [];
-
+/*
 	if (_atmEnabled) then {
 		_strArray pushBack format ["%1 <img size='0.7' image='client\icons\suatmm_icon.paa'/>", [player getVariable ["bmoney", 0]] call fn_numbersText];
 	};
@@ -152,7 +172,7 @@ while {true} do
 	};
 
 	_strArray pushBack format ["<t color='%1'>%2</t> <img size='0.7' image='client\icons\health.paa'/>", _healthTextColor, _health];
-
+*/
 	_str = "";
 
 	{ _str = format ["%1%2<br/>", _str, _x] } forEach _strArray;
@@ -173,7 +193,7 @@ while {true} do
 
 	if (isStreamFriendlyUIEnabled) then
 	{
-		_tempString = format ["<t color='#CCCCCCCC'>A3Wasteland %1<br/>a3wasteland.com</t>", getText (configFile >> "CfgWorlds" >> worldName >> "description")];
+		_tempString = format ["<t color='#CCCCCCCC'>AJ A3Wasteland %1<br/>www.armajunkies.de</t>", getText (configFile >> "CfgWorlds" >> worldName >> "description")];
 		_yOffset = _yOffset + 0.08;
 	}
 	else
@@ -342,5 +362,85 @@ while {true} do
 		showChat true;
 	};
 
-	uiSleep 1; // do NOT set higher than 1, this will cause unintended side effects
+	/*/===== Armor Camonets (Tanks DLC)/*/
+	_cursorObject = cursorObject;
+	_cursorDistance = player distance _cursorObject;
+	if (
+		(isNull (objectParent player)) &&
+		{(alive _cursorObject)} &&
+		{(_cursorDistance < 5)} &&
+		{((_cursorObject isKindOf 'Tank') || {(_cursorObject isKindOf 'Wheeled_APC_F')})} &&
+		{(!(isSimpleObject _cursorObject))} &&
+		{((locked _cursorObject) in [0,1])}
+	) then {
+		_QS_action_camonetArmor_vAnims = _cursorObject getVariable ['QS_vehicle_camonetAnims',-1];
+		if (_QS_action_camonetArmor_vAnims isEqualTo -1) then {
+			_array = [];
+			_animationSources = configFile >> 'CfgVehicles' >> (typeOf _cursorObject) >> 'animationSources';
+			_i = 0;
+			for '_i' from 0 to ((count _animationSources) - 1) step 1 do {
+				_animationSource = _animationSources select _i;
+				if (((toLower (configName _animationSource)) in _QS_action_camonetArmor_anims) || {(['showcamo',(configName _animationSource),false] call _fn_inString)}) then {
+					0 = _array pushBack (toLower (configName _animationSource));
+				};
+			};
+			{
+				if (_x isEqualType '') then {
+					if (!((toLower _x) in _array)) then {
+						if (((toLower _x) in _QS_action_camonetArmor_anims) || {(['showcamo',_x,false] call _fn_inString)}) then {
+							_array pushBack (toLower _x);
+						};
+					};
+				};
+			} forEach (getArray (configFile >> 'CfgVehicles' >> (typeOf _cursorObject) >> 'animationList'));
+			_cursorObject setVariable ['QS_vehicle_camonetAnims',_array,false];
+		} else {
+			if (_QS_action_camonetArmor_vAnims isEqualType []) then {
+				if (!(_QS_action_camonetArmor_vAnims isEqualTo [])) then {
+					if (!(_QS_interaction_camonetArmor)) then {
+						if (!((_QS_action_camonetArmor_vAnims findIf {((_cursorObject animationSourcePhase _x) isEqualTo 1)}) isEqualTo -1)) then {
+							_QS_action_camonetArmor_array set [0,_QS_action_camonetArmor_textB];
+							_QS_action_camonetArmor_array set [2,[_cursorObject,0,_QS_action_camonetArmor_vAnims]];
+							_cursorObject setVariable ["CamoDeployed", false, true];
+						} else {
+							_QS_action_camonetArmor_array set [0,_QS_action_camonetArmor_textA];
+							_QS_action_camonetArmor_array set [2,[_cursorObject,1,_QS_action_camonetArmor_vAnims]];
+							_cursorObject setVariable ["CamoDeployed", true, true];
+						};
+						_QS_interaction_camonetArmor = true;
+						_QS_action_camonetArmor = player addAction _QS_action_camonetArmor_array;
+						player setUserActionText [_QS_action_camonetArmor,((player actionParams _QS_action_camonetArmor) # 0),(format ["<t size='2'>%1</t>",((player actionParams _QS_action_camonetArmor) # 0)])];
+					} else {
+						if (!((_QS_action_camonetArmor_vAnims findIf {((_cursorObject animationSourcePhase _x) isEqualTo 1)}) isEqualTo -1)) then {
+							if ((_QS_action_camonetArmor_array # 0) isEqualTo _QS_action_camonetArmor_textA) then {
+								_QS_interaction_camonetArmor = false;
+								player removeAction _QS_action_camonetArmor;
+							};
+						} else {
+							if ((_QS_action_camonetArmor_array # 0) isEqualTo _QS_action_camonetArmor_textB) then {
+								_QS_interaction_camonetArmor = false;
+								player removeAction _QS_action_camonetArmor;
+							};
+						};
+					};
+				} else {
+					if (_QS_interaction_camonetArmor) then {
+						_QS_interaction_camonetArmor = false;
+						player removeAction _QS_action_camonetArmor;
+					};
+				};
+			} else {
+				if (_QS_interaction_camonetArmor) then {
+					_QS_interaction_camonetArmor = false;
+					player removeAction _QS_action_camonetArmor;
+				};
+			};
+		};
+	} else {
+		if (_QS_interaction_camonetArmor) then {
+			_QS_interaction_camonetArmor = false;
+			player removeAction _QS_action_camonetArmor;
+		};
+	};
+	uiSleep 1;
 };

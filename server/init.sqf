@@ -18,68 +18,80 @@ if (isServer) then
 {
 	vChecksum = compileFinal str call A3W_fnc_generateKey;
 
-	//addMissionEventHandler ["EntityRespawned", { diag_log format ["test123 Respawned %1", _this] }];
-
 	// Corpse deletion on disconnect if player alive and player saving on + inventory save
 	addMissionEventHandler ["HandleDisconnect",
 	{
-		params ["_unit", "_id", "_uid", "_name"];
-
-		if (isNil "A3W_serverSetupComplete") exitWith
+		_unit = _this select 0;
+		_id = _this select 1;
+		_uid = _this select 2;
+		_name = _this select 3;
+		
+		//diag_log format ["HandleDisconnect - %1 - alive: %2 - local: %3", [_name, _uid], alive _unit, local _unit];
+		// Added to counter act AI ghosts
+		diag_log format ["HandleDisconnect - %1 - alive: %2 - local: %3 - isPlayer: %4 - getPlayerUID: '%5'", [_name, _uid], alive _unit, local _unit, isPlayer _unit, getPlayerUID _unit];
+		
+		_bountyMarker = format ["%1_bountyMarker", _name];  	
+		if (markerType _bountyMarker == "mil_dot") then
 		{
-			deleteVehicle _unit;
-			false
+			deleteMarker _bountyMarker;
+
+			[
+				parseText format
+				[
+					"<t color='#ff0000' size='1.2' align='center'>[SERVER MESSAGE]</t><br />" +
+					"<t color='#FFFFFF' align='center'>------------------------------</t><br/>" +
+					"<t color='#FFFFFF' size='1.0' align='center'>player %1 disconnected while being high value target!</t>",
+					_name
+				]
+			] call hintBroadcast;
+
+			diag_log format ["Possible Combat logger: %1 disconnected while being %2!", _name, _bountyMarker];
 		};
-
-		diag_log format ["HandleDisconnect - %1 - alive: %2 - local: %3 - isPlayer: %4 - group: %5", [_name, _uid], alive _unit, local _unit, isPlayer _unit, group _unit];
-
-		_veh = objectParent _unit;
-
-		// force unlock vehicle if not owned by player OR if somebody else is still inside
-		if (alive _veh && (_veh getVariable ["ownerUID","0"] != _uid || {{alive _x} count (crew _veh - [_unit]) > 0})) then
+		
+		_drugsMarker = format ["%1_drugsMarker", _name];  	
+		if (markerType _drugsMarker == "mil_dot") then
 		{
-			[_veh, 1] call A3W_fnc_setLockState; // Unlock
-		};
+			deleteMarker _drugsMarker;
 
+			[
+				parseText format
+				[
+					"<t color='#ff0000' size='1.2' align='center'>[SERVER MESSAGE]</t><br />" +
+					"<t color='#FFFFFF' align='center'>------------------------------</t><br/>" +
+					"<t color='#FFFFFF' size='1.0' align='center'>player %1 disconnected while being a drugsrunner!</t>",
+					_name
+				]
+			] call hintBroadcast;
+
+			diag_log format ["Possible Combat logger: %1 disconnected while being %2!", _name, _drugsMarker];
+		};
+				
 		if (alive _unit) then
 		{
-			if (_unit call A3W_fnc_isUnconscious) then
+			if (!(_unit call A3W_fnc_isUnconscious) && {!isNil "isConfigOn" && {["A3W_playerSaving"] call isConfigOn}}) then
 			{
-				[_unit] spawn dropPlayerItems;
-				[_uid, "deathCount", 1] call fn_addScore;
-				_unit setVariable ["A3W_handleDisconnect_name", _name];
-				_unit setVariable ["A3W_handleDisconnect_UID", _uid];
-				_unit setVariable ["A3W_deathCause_local", ["bleedout"]];
-				[_unit, objNull, objNull, true] call A3W_fnc_registerKillScore; // killer retrieved via FAR_killerUnit
-			}
-			else
-			{
-				if (["A3W_playerSaving"] call isConfigOn) then
+				if (!(_unit getVariable ["playerSpawning", true]) && getText (configFile >> "CfgVehicles" >> typeOf _unit >> "simulation") != "headlessclient") then
 				{
-					if (!(_unit getVariable ["playerSpawning", true]) && getText (configFile >> "CfgVehicles" >> typeOf _unit >> "simulation") != "headlessclient") then
-					{
-						[_uid, [], [_unit, false] call fn_getPlayerData] spawn fn_saveAccount;
-					};
-
-					deleteVehicle _unit;
+					[_uid, [], [_unit, false] call fn_getPlayerData] spawn fn_saveAccount;
 				};
+
+				deleteVehicle _unit;
 			};
 		}
 		else
 		{
-			if (isNull _unit) exitWith {};
-
-			if (!isNull _veh) then
+			if (vehicle _unit != _unit && !isNil "fn_ejectCorpse") then
 			{
 				_unit spawn fn_ejectCorpse;
 			};
-
-			if (["A3W_playerSaving"] call isConfigOn) then
-			{
-				_uid spawn fn_deletePlayerSave;
-			};
 		};
-
+		
+		// Added to counter act AI ghosts
+		if (!isNull _unit) then
+		{
+			_unit addEventHandler ["Respawn", { deleteVehicle (_this select 0); diag_log "Ghost deleted" }];
+		};
+		
 		false
 	}];
 
@@ -88,7 +100,8 @@ if (isServer) then
 	[] execVM "server\admins.sqf";
 };
 
-call compile preprocessFileLineNumbers "server\functions\serverVars.sqf";
+	//[] execVM "server\functions\serverVars.sqf";
+	call compile preprocessFileLineNumbers "server\functions\serverVars.sqf";
 
 if (isServer) then
 {
@@ -151,19 +164,26 @@ if (isServer) then
 		"A3W_vehicleSaving",
 		"A3W_staticWeaponSaving",
 		"A3W_missionFarAiDrawLines",
-		"A3W_atmEnabled",
+        "A3W_atmEnabled",
 		"A3W_atmMaxBalance",
 		"A3W_atmTransferFee",
 		"A3W_atmTransferAllTeams",
 		"A3W_atmEditorPlacedOnly",
 		"A3W_atmMapIcons",
 		"A3W_atmRemoveIfDisabled",
+		"A3W_teamSwitchLock",
+		"APOC_coolDownTimer",
+		"Monkey_AirSupport_coolDownTime",
+		"Monkey_AirSupport_coolDownTime2",		
+		"A3W_AJBaseRadius",  //AJ Radius for Base Locker		
 		"A3W_uavControl",
 		"A3W_disableUavFeed",
 		"A3W_townSpawnCooldown",
 		"A3W_survivalSystem",
 		"A3W_extDB_GhostingAdmins",
 		"A3W_extDB_SaveUnlockedObjects",
+		"A3W_maxSpawnBeacons",
+		"A3W_maxSpawnBeaconsInv",
 		"A3W_hcPrefix",
 		"A3W_hcObjCaching",
 		"A3W_hcObjCachingID",
@@ -180,10 +200,13 @@ if (isServer) then
 		"A3W_artilleryShells",
 		"A3W_artilleryRadius",
 		"A3W_artilleryCooldown",
-		"A3W_artilleryAmmo",
-		"A3W_territoryWarningIcons",
+        "A3W_artilleryAmmo",
+		"BoS_coolDownTimer",
+		"Safe_coolDownTimer",
 		"A3W_disableBuiltInThermal",
-		"A3W_headshotNoRevive"
+		"A3W_territoryWarningIcons",		
+		"A3W_headshotNoRevive",
+		"A3W_Max_Group_Count"
 	];
 
 	addMissionEventHandler ["PlayerConnected", fn_onPlayerConnected];
@@ -201,6 +224,7 @@ _beaconSavingOn = ["A3W_spawnBeaconSaving"] call isConfigOn;
 _timeSavingOn = ["A3W_timeSaving"] call isConfigOn;
 _weatherSavingOn = ["A3W_weatherSaving"] call isConfigOn;
 _mineSavingOn = ["A3W_mineSaving"] call isConfigOn;
+_cameraSavingOn = ["A3W_cctvCameraSaving"] call isConfigOn;
 
 _objectSavingOn = (_baseSavingOn || _boxSavingOn || _staticWeaponSavingOn || _warchestSavingOn || _warchestMoneySavingOn || _beaconSavingOn);
 _vehicleSavingOn = ["A3W_vehicleSaving"] call isConfigOn;
@@ -218,7 +242,7 @@ if (_hcObjSavingOn) then
 		if (_timeSavingOn || _weatherSavingOn) then
 		{
 			"currentDate" addPublicVariableEventHandler ("client\functions\clientTimeSync.sqf" call mf_compile);
-			drn_DynamicWeather_MainThread = [] execVM "addons\scripts\DynamicWeatherEffects.sqf";
+			//drn_DynamicWeather_MainThread = [] execVM "addons\scripts\DynamicWeatherEffects.sqf";
 		};
 	};
 };
@@ -302,7 +326,8 @@ if (_playerSavingOn || _objectSavingOn || _vehicleSavingOn || _mineSavingOn || _
 	};
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    //call compile preprocessFileLineNumbers "server\systems\bounties\init.sqf";
+	//call compile preprocessFileLineNumbers "server\systems\events\init.sqf";
 	call compile preProcessFileLineNumbers format ["persistence\server\setup\%1\init.sqf", call A3W_savingMethodDir];
 
 	if (isServer && _playerSavingOn) then
@@ -431,6 +456,7 @@ if (_playerSavingOn || _objectSavingOn || _vehicleSavingOn || _mineSavingOn || _
 			["vehicleSaving", _vehicleSavingOn],
 			["boxSaving", _boxSavingOn],
 			["staticWeaponSaving", _staticWeaponSavingOn],
+			["cctvCameraSaving", _cameraSavingOn],			
 			["warchestSaving", _warchestSavingOn],
 			["warchestMoneySaving", _warchestMoneySavingOn],
 			["spawnBeaconSaving", _beaconSavingOn],
@@ -520,6 +546,7 @@ if (["A3W_serverSpawning"] call isConfigOn) then
 	{
 		execVM "server\spawning\vehicleRespawnManager.sqf";
 	};
+	
 };
 
 A3W_serverSpawningComplete = compileFinal "true";
@@ -543,6 +570,7 @@ else
 		if (!isPlayer _x && {(toLower ((vehicleVarName _x) select [0,8])) in ["genstore","gunstore","vehstore"]}) then
 		{
 			[_x] joinSilent _storeGroup;
+			//_x setCaptive true
 		};
 	} forEach entities "CAManBase";
 };
@@ -559,3 +587,11 @@ if !(["A3W_hcObjCleanup"] call isConfigOn) then
 	// Start clean-up loop
 	execVM "server\WastelandServClean.sqf";
 };
+
+// Extra clean-up test
+[] execVM "addons\module_cleanup\init.sqf";
+
+
+[] execVM "addons\scripts\STRepositionShips.sqf";
+
+

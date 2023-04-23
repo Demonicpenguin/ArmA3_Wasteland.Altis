@@ -64,6 +64,15 @@ else
 	_confirmBtn ctrlEnable true;
 };
 
+// Areas that artillery strike would not be allowed
+
+if (["noArtillery"] findIf {_pos inArea _x} != -1) then
+{
+	_confirmBtn ctrlEnable false;
+	_labelCtrl ctrlSetStructuredText parseText "<t color='#FF0000'> Error: Protected area </t>";
+	A3W_artilleryMenu_drawEllipse = [_pos, _ellipseRadius, _ellipseRadius, 0, [1,1,1,1], "#(argb,8,8,3)color(1,0,0,0.5)"];
+};
+
 ctrlMapAnimClear _mapCtrl;
 _mapCtrl ctrlMapAnimAdd [0.5, 0.025, _pos];
 ctrlMapAnimCommit _mapCtrl;

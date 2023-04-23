@@ -34,6 +34,7 @@ for "_i" from 1 to _nbUnits do
 
 	removeAllWeapons _unit;
 	removeAllAssignedItems _unit;
+	removeUniform _unit;
 	removeVest _unit;
 	removeBackpack _unit;
 	_unit addVest "V_HarnessOSpec_gry";
@@ -46,6 +47,7 @@ for "_i" from 1 to _nbUnits do
 		// Grenadier every 3 units
 		case (_i % 3 == 0):
 		{
+			_unit addUniform "U_I_C_Soldier_Para_2_F";
 			_unit addMagazine "1Rnd_HE_Grenade_shell";
 			_unit addWeapon "arifle_TRG21_GL_F";
 			_unit addMagazine "1Rnd_HE_Grenade_shell";
@@ -54,16 +56,19 @@ for "_i" from 1 to _nbUnits do
 		// RPG every 7 units, starting from second one
 		case ((_i + 5) % 7 == 0):
 		{
+			_unit addUniform "U_I_C_Soldier_Para_5_F";
 			_unit addBackpack "B_Kitbag_mcamo";
 			_unit addWeapon "arifle_TRG20_F";
 			_unit addMagazine "Titan_AT";
-			_unit addWeapon "launch_Titan_short_F";
+			_unit addWeapon "launch_I_Titan_short_F";
 			_unit addMagazine "Titan_AT";
 			_unit addMagazine "Titan_AT";
 		};
 		// Rifleman
 		default
 		{
+			_unit addUniform "U_I_C_Soldier_Para_4_F";
+			
 			if (_unit == leader _group) then
 			{
 				_unit addWeapon "arifle_TRG21_F";

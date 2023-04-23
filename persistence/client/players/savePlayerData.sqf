@@ -6,6 +6,7 @@
 
 #define PLAYER_CONDITION (alive player && !(missionNamespace getVariable ["playerSpawning", true]) && (isNil "A3W_fnc_isUnconscious" || {!(player call A3W_fnc_isUnconscious)}))
 
+if (AdminUniformOn) exitWith {};
 if (!isNil "savePlayerHandle" && {savePlayerHandle isEqualType 0 && {!completedFSM savePlayerHandle}}) exitWith {};
 
 savePlayerHandle = [_this,
@@ -75,7 +76,7 @@ savePlayerHandle = [_this,
 
 			if (_manualSave) then
 			{
-				cutText ["\nPlayer saved!" + (["\nBackpacks inside your backpack are not saved.",""] select(backpackCargo backpackContainer player isEqualTo [])), "PLAIN DOWN", 0.2];
+				cutText ["\nPlayer saved!", "PLAIN DOWN", 0.2];
 			};
 		};
 

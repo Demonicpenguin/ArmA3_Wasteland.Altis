@@ -13,3 +13,5 @@ if (_veh getVariable ["A3W_skipAutoSave", false]) then
 
 pvar_manualVehicleSave = netId _veh;
 publicVariableServer "pvar_manualVehicleSave";
+
+hint "Your Vehicle has been Force Saved";

@@ -42,7 +42,7 @@ _minimumFog = 0;
 
 // Fog intensity never exceeds this value. Must be between 0 and 1 and greater than or equal to _minimumFog
 // (0 = no fog, 1 = pea soup). (Suggested value: 0.2).
-_maximumFog = 0.2;
+_maximumFog = 0;
 
 // New ArmA3 facilities added by Bewilderbeest - not currently taken into account due to engine syncing bugs and weird behavior
 _minimumFogDecay = 0.0;
@@ -52,7 +52,7 @@ _maximumFogBase = 0;
 
 // Overcast intensity never falls below this value. Must be between 0 and 1 and less than or equal to _maximumOvercast
 // (0 = no overcast, 1 = maximum overcast). (Suggested value: 0).
-_minimumOvercast = 0.1;
+_minimumOvercast = 0;
 
 // Overcast intensity never exceeds this value. Must be between 0 and 1 and greater than or equal to _minimumOvercast
 // (0 = no overcast, 1 = maximum overcast). (Suggested value: 1).
@@ -72,7 +72,7 @@ _minimumWind = 0;
 
 // Wind vector strength never exceeds this value. Must be greater or equal to 0 and greater than or equal to _minimumWind.
 // (Suggested value: 5).
-_maximumWind = 5;
+_maximumWind = 2;
 
 // Probability in percent for wind to change when weather changes. If set to 0 then wind will never change. If set to 100 then rain will
 // change every time the weather (fog or overcast) start to change. (Suggested value: 25);
@@ -85,11 +85,11 @@ _windChangeProbability = 25;
 // Probability in percent (0-100) for rain to start at every rain interval. Set this to 0 if you don't want rain at all. Set this to 100
 // if you want it to rain constantly when overcast is greater than 0.75. In short: if you think that it generally rains to often then
 // lower this value and vice versa. (Suggested value: 50).
-_rainIntervalRainProbability = 0; // overcast syncing fubar, do not enable rain
+_rainIntervalRainProbability = 50; // overcast syncing fubar, do not enable rain
 
 // Minimum time in minutes for rain intervals. Must be greater or equal to 0 and less than or equal to _maxRainIntervalTimeMin.
 // (Suggested value: 0).
-_minRainIntervalTimeMin = 1;
+_minRainIntervalTimeMin = 0;
 
 // Maximum time in minutes for rain intervals. Must be greater than or equal to _minRainIntervalTimeMin. (Suggested value:
 // (_maxWeatherChangeTimeMin + _maxTimeBetweenWeatherChangesMin) / 2).

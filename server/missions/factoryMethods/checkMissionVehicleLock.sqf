@@ -18,7 +18,6 @@ if (_vehicle isKindOf "LandVehicle") then
 	_shepherd = _vehicle addEventHandler ["GetOut",
 	{
 		_unit = _this select 2;
-		if (isPlayer _unit) exitWith {};
 		_veh = assignedVehicle _unit;
 
 		if (canMove _veh) then

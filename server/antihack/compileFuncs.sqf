@@ -51,9 +51,8 @@ scopeName "compileFuncs";
 		["A3W_fnc_chatBroadcast", _assignChecksum, "server\antihack\chatBroadcast.sqf"],
 		["A3W_fnc_adminMenuLog", _assignChecksum, "server\antihack\adminMenuLog.sqf"],
 		["A3W_fnc_logMemAnomaly", _assignChecksum, "server\antihack\logMemAnomaly.sqf"],
-		["A3W_fnc_remoteExecIntruder", _assignChecksum, "server\antihack\remoteExecIntruder.sqf"],
-		["notifyAdminMenu", _assignChecksum, "server\antihack\notifyAdminMenu.sqf"]
-	];
+		["A3W_fnc_remoteExecIntruder", _assignChecksum, "server\antihack\remoteExecIntruder.sqf"]
+    ];
 
 	if (isServer) then
 	{

@@ -10,7 +10,7 @@
 private ["_uid","_handle"];
 _uid = getPlayerUID player;
 
-if (!isNull (uiNamespace getVariable ["AdminMenu", displayNull]) && !(player call A3W_fnc_isUnconscious)) exitWith {};
+if (!isNull (uiNamespace getVariable ["AdminMenu", displayNull]) && player getVariable ["FAR_isUnconscious", 0] == 0) exitWith {};
 
 switch (true) do
 {

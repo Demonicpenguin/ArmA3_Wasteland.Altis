@@ -178,11 +178,11 @@ va_get_tag = {
   if (isSTRING(_tag)) exitWith {_tag};
   if (not(isNil "_tag")) exitWith {str _tag};
 
-  netId _vehicle
+  ""
 };
 
 va_get_owner_name = {
-  ARGVX4(0,_vehicle,objNull,"(none)");
+  ARGVX4(0,_vehicle,objNull,"None");
 
   def(_name);
   _name = _vehicle getVariable "ownerN";
@@ -202,7 +202,7 @@ va_get_owner_name = {
   _uid3 = _vehicle getVariable ["ownerUID", ""];
   _uid4 = _vehicle getVariable ["UID", ""];
 
-  if (_uid1 == "" && { _uid2 == "" && { _uid3 == "" && { _uid4 == ""}}}) exitWith {"(none)"};
+  if (_uid1 == "" && { _uid2 == "" && { _uid3 == "" && { _uid4 == ""}}}) exitWith {"None"};
 
   def(_uid);
   def(_player);
@@ -238,13 +238,9 @@ va_information_action = {
   def(_display_name);
   _class = typeOf _vehicle;
   _driver = driver _vehicle;
-  _driver = if (isNull _driver) then {"(none)"} else {(name _driver)};
+  _driver = if (isNull _driver) then {"None"} else {(name _driver)};
   _picture = [_class] call generic_picture_path;
-
-  private _variant = _vehicle getVariable ["A3W_vehicleVariant", ""];
-  if (_variant != "") then { _variant = "variant_" + _variant };
-
-  _display_name = [_class, _variant] call generic_display_name_variant;
+  _display_name = [_class] call generic_display_name;
 
   def(_owner);
   def(_tag);
@@ -261,19 +257,19 @@ va_information_action = {
     _text = _text + "<t align='left' font='PuristaMedium' size='1'>" + _label + "</t><t align='left' font='PuristaMedium'>" + _value + "</t><br />";
   }
   forEach(
-    [["   ID:           ", ([_tag,17] call str_truncate)],
+    [["   ID:         ", ([_tag,17] call str_truncate)],
      ["   Direction:  ", str(round(getdir _vehicle)) + toString [176]],
-     ["   Grid:        ", mapGridPosition _vehicle],
-     ["   Altitude:   ", str(round(getposASL _vehicle select 2)) + " m ASL"],
+     ["   Grid:       ", mapGridPosition _vehicle],
+     ["   Altitude:   ", str(round(getposASL _vehicle select 2)) + " meter(s) ASL"],
      ["   Driver:     ", ([_driver,17] call str_truncate)],
-     ["   Seats:     ", str((_vehicle emptyPositions "cargo")+(_vehicle emptyPositions "driver"))],
-     ["   Size:       ", str(round((sizeOf _class)*10)/10) + " m"],
-     ["   Owner:    ",  ([_owner,17] call str_truncate)]
+     ["   Seats:     ", str((_vehicle emptyPositions "cargo")+(_vehicle emptyPositions "driver")) + " seat(s)"],
+     ["   Size:       ", str(round((sizeOf _class)*10)/10) + " meter(s)"],
+     ["   Owner:     ",  ([_owner,17] call str_truncate)]
 
 
     ]);
 
-  _text = format["<t align='center' font='PuristaMedium' size='1.4' >Vehicle Information</t><br /><img image='%1' size='2.8'   /><br /><t  align='center'>%2</t>", _picture, _display_name] + "<br /><br />" + _text;
+  _text = format["<t align='center' font='PuristaMedium' size='1.4' >Vehicle Information</t><br /><img image='%1' size='2.8'   /><br /><t  align='center'>(%2)</t>", _picture, ([_display_name,25] call str_truncate)] + "<br /><br />" + _text;
   hint parseText _text;
 };
 
@@ -450,23 +446,23 @@ va_outside_add_actions = {
   };
 
   //Add unfliping action
-  _action_id = _player addaction [format["<img image='addons\vactions\icons\flip.paa'/> Unflip %1", _display_name], {_this call va_unflip_action;}, [_player, _vehicle],10,false,false,"",
+  _action_id = _player addaction [format["<t color='#00dd00'><img image='addons\vactions\icons\flip.paa'/> Unflip %1</t>", _display_name], {_this call va_unflip_action;}, [_player, _vehicle],10,false,false,"", // Added color to text
   format["([objectFromNetId %1] call va_unflip_action_available)",str(netId _vehicle)]];
   va_outside_actions = va_outside_actions + [_action_id];
 
 
   //Add view vehicle information action
-  _action_id = player addaction [format["<img image='addons\vactions\icons\info.paa'/> %1 info", _display_name], {_this call va_information_action;}, [_player, _vehicle],0,false,false,"",
+  _action_id = player addaction [format["<t color='#00eeff'><img image='addons\vactions\icons\info.paa'/> %1 info</t>", _display_name], {_this call va_information_action;}, [_player, _vehicle],0,false,false,"", // Added color to text
   format["([objectFromNetId %1, objectFromNetId %2] call va_information_action_available)", str(netId _player), str(netId _vehicle)]];
   va_outside_actions = va_outside_actions + [_action_id];
 
   //Add vehicle lock action
-  _action_id = player addaction [format["<img image='addons\vactions\icons\lock.paa'/> Lock %1", _display_name], {_this call va_lock_action;}, [_player, _vehicle],0,false,false,"",
+  _action_id = player addaction [format["<t color='#FF0000'><img image='addons\vactions\icons\lock.paa'/> Lock %1</t>", _display_name], {_this call va_lock_action;}, [_player, _vehicle],0,false,false,"", // Added color to text
   format["([objectFromNetId %1, objectFromNetId %2] call va_lock_action_available)", str(netId _player), str(netId _vehicle)]];
   va_outside_actions = va_outside_actions + [_action_id];
 
   //Add vehicle unlock action
-  _action_id = player addaction [format["<img image='addons\vactions\icons\key.paa'/> Unlock %1", _display_name], {_this call va_unlock_action;}, [_player, _vehicle],999,true,false,"",
+  _action_id = player addaction [format["<t color='#06ef00'><img image='addons\vactions\icons\key.paa'/> Unlock %1</t>", _display_name], {_this call va_unlock_action;}, [_player, _vehicle],999,true,false,"", // Added color to text
   format["([objectFromNetId %1, objectFromNetId %2] call va_unlock_action_available)", str(netId _player), str(netId _vehicle)]];
   va_outside_actions = va_outside_actions + [_action_id];
 };

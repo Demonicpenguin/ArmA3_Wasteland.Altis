@@ -410,6 +410,8 @@ storePurchaseHandle = _this spawn
 		} forEach (call vestArray);
 	};
 
+
+
 	if (isNil "_price") then
 	{
 		{

@@ -27,6 +27,7 @@ while {true} do
 	_payouts = [];
 
 	{
+			if (((_x select 0) != "TERRITORY_DUMP_2") || ((_x select 0) != "TERRITORY_MAIN_AIRBASE_CENTER")) then {
 		_territoryOwner = _x select 2;
 		_territoryChrono = _x select 3;
 
@@ -52,7 +53,8 @@ while {true} do
 				};
 			};
 		};
-	} forEach currentTerritoryDetails;
+	};
+} forEach currentTerritoryDetails;
 
 	{
 		_team = _x select 0;

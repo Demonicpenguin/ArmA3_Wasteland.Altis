@@ -31,7 +31,7 @@ if (_this select 1 == "Put") then
 	// usage of dummy object is needed to guaranted pos & dir syncing and use setVariable, thanks to BIS for not fixing this in 10 damn years!!!!
 	_dummy = createVehicle [STICKY_CHARGE_DUMMY_OBJ, [-1e5,-1e5,1e5], [], 0, "NONE"];
 	_dummy setVariable ["A3W_stickyCharges_isDummy", true, true];
-	_dummy setObjectTextureGlobal [0, "#(argb,8,8,3)color(0,0,0,0)"];
+	_dummy setObjectTextureGlobal [0,""];
 	_dummy allowDamage false;
 	_dummy attachTo [_bomb, [0,0,0]];
 
@@ -77,7 +77,7 @@ if (_this select 1 == "Put") then
 	if (getObjectType _target isEqualTo 8 && simulationEnabled _target && !(_target isKindOf "TimeBombCore") &&
 	    {_target isKindOf "AllVehicles" || !_allowDamage ||
 	     {!((toLower getText (_targetCfg >> "destrType")) in ["destructbuilding","destructtent","destructtree","destructwall"]) &&
-	      configProperties [_targetCfg >> "DestructionEffects", "isClass _x && {getText (_x >> 'simulation') == 'ruin'}"] isEqualTo []}}) then
+	      ("getText (_x >> 'simulation') == 'ruin'" configClasses (_targetCfg >> "DestructionEffects")) isEqualTo []}}) then
 	{
 		_bomb attachTo [_target, _target worldToModelVisual ASLtoAGL _posASL];
 		_vecUp = _target worldToModelVisual ASLtoAGL ((AGLtoASL (_target modelToWorldVisual [0,0,0])) vectorAdd _normal);

@@ -35,7 +35,7 @@ if (isServer) then {
     def(_size);
     _size = sizeof _class;
 
-    ((_position distance _player) < 50 && {
+    ((_position distance _player) < 150 && {
      (count(nearestObjects [_position, _classes , _size]) == 0)})
   };
 
@@ -109,6 +109,30 @@ if (isServer) then {
       [_player, format ["Someone else has the ownership of the %1, you cannot park it.", ([typeOf _vehicle] call generic_display_name)], "Parking Error"] call pp_notify;
     };
 
+/*********************************************************************************************************/
+	
+	switch (true) do
+	{
+		case (_vehicle isKindOf "HAFM_Virginia"):				// Test to remove DDS and SDV from subs before parking
+		{
+			[_vehicle, 0] call HAFM_fnc_SubAttachment;			
+		};
+		case (_vehicle isKindOf "HAFM_Yasen"):
+		{
+			[_vehicle, 0] call HAFM_fnc_SubAttachment;			
+		};							
+		case (_vehicle isKindOf "HAFM_214"):
+		{
+			[_vehicle, 0] call HAFM_fnc_SubAttachment;			
+		};							
+		case (_vehicle isKindOf "HAFM_209"):
+		{
+			[_vehicle, 0] call HAFM_fnc_SubAttachment;			
+		};
+	};
+
+/*********************************************************************************************************/	
+	
     diag_log format["Parking vehicle %1(%2) for player %3(%4)", typeOf _vehicle, netId _vehicle,  (name _player), _uid];
 
     def(_parked_vehicles);
@@ -190,7 +214,7 @@ if (isServer) then {
     _class = [_vehicle_data, "Class"] call fn_getFromPairs;
 
     private ["_marker", "_markerPos", "_dirAngle", "_pos", "_posAGL"];
-    private _nearbySpawns = allMapMarkers select {_x select [0,7] == "Parking" && {_x select [count _x - 6, 6] == "_spawn" && _player distance markerPos _x < 100}};
+    private _nearbySpawns = allMapMarkers select {_x select [0,7] == "Parking" && {_x select [count _x - 6, 6] == "_spawn" && _player distance markerPos _x < 300}};
 
     if !(_nearbySpawns isEqualTo []) then
     {
@@ -221,6 +245,958 @@ if (isServer) then {
 
     def(_vehicle);
     _vehicle = [[_vehicle_id, _vehicle_data], true,OR(_create_array,nil)] call v_restoreVehicle;
+
+	if (_vehicle isKindOf "ship") then {[_vehicle, 1] call A3W_fnc_setLockState;};	 // unLock
+/***********************************************BOMOS****************************************************/
+	
+		if (count (_player nearObjects ["Land_Statue_02_F", 10]) > 0) then // Bomos
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2603.25,21755.762,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2603.25,21755.762,18.478];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2536.96,21768.2,14.158];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2536.96,21768.2,14.158];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2536.96,21768.2,14.158];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2536.96,21768.2,14.158];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2536.96,21768.2,14.158];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2603.25,21755.762,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2616.109,21748.385,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2616.109,21748.385,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 206;			
+					_vehicle setPosASL [2546.161,21788.33,13.737];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 114.976;			
+					_vehicle setPosASL [2552.91,21707.5,10];				
+				};			
+			};	
+		};
+
+	
+/*******************************************ISLAND*******************************************************/	
+
+		if (count (_player nearObjects ["Land_Statue_01_F", 10]) > 0) then // Island Positions
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 355;			
+					_vehicle setPosASL [14217.053,13165.772,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 84;
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 355;			
+					_vehicle setPosASL [14217.053,13165.772,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 355;			
+					_vehicle setPosASL [14217.053,13165.772,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 355;		
+					_vehicle setPosASL [14217.053,13165.772,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 84;			
+					_vehicle setPosASL [14234.105,13216.237,15.391];			
+				};			
+			};	
+		};
+
+/*******************************************NORTH*******************************************************/	
+
+		if (count (_player nearObjects ["Land_PalmTotem_01_F", 10]) > 0) then // North Resupply Platform Positions
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 44.727;			
+					_vehicle setPosASL [21341.266,24020.637,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 44.727;			
+					_vehicle setPosASL [21341.266,24020.637,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 44.727;			
+					_vehicle setPosASL [21341.266,24020.637,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 44.727;			
+					_vehicle setPosASL [21341.266,24020.637,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 43.305;			
+					_vehicle setPosASL [21359,24049.7,15.391];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 131.371;			
+					_vehicle setPosASL [21282.2,23931.5,184.187];				
+				};			
+			};	
+		};
+
+/*******************************************SOUTH*******************************************************/	
+
+		if (count (_player nearObjects ["Land_Monument_01_F", 10]) > 0) then // South Resupply Platform Positions
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 106.723;			
+					_vehicle setPosASL [12574.771,5411.977,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 106.723;			
+					_vehicle setPosASL [12574.771,5411.977,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 106.723;			
+					_vehicle setPosASL [12574.771,5411.977,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 106.723;			
+					_vehicle setPosASL [12574.771,5411.977,1];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 105.074;			
+					_vehicle setPosASL [12606.4,5411.44,15.391];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 197.675;			
+					_vehicle setPosASL [12473.1,5436.39,105.116];				
+				};			
+			};	
+		};
+
+/*******************************************EAST*******************************************************/	
+
+		if (count (_player nearObjects ["Land_Pedestal_02_F", 10]) > 0) then // East Resupply Platform Positions
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 28;			
+					_vehicle setPosASL [25408.574,17812.633,13.737];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 28;			
+					_vehicle setPosASL [25408.574,17812.633,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 28;			
+					_vehicle setPosASL [25408.574,17812.633,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 28;			
+					_vehicle setPosASL [25408.574,17812.633,13.737];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 28.966;			
+					_vehicle setPosASL [25420.5,17844.7,15.391];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 119.246;			
+					_vehicle setPosASL [25371.8,17702.5,15.391];				
+				};			
+			};	
+		};
+
+/*******************************************KAVALA*******************************************************/	
+
+		if (count (_player nearObjects ["Land_Maroula_F", 10]) > 0) then // Kavala Parking Positions
+		{
+			switch (true) do
+			{
+				case (_vehicle isKindOf "HAFM_Virginia"):				// Test to reposition ships/subs for easy player access
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};	
+				case (_vehicle isKindOf "HAFM_MisBoat"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};	
+				case (_vehicle isKindOf "HAFM_CB90"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};
+				case (_vehicle isKindOf "HAFM_GunBoat"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};	
+				case (_vehicle isKindOf "HAFM_GunBoat_BLU"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_CB90_BLU"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_BLU"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Replenishment"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Russen"):
+				{				
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Admiral"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_TN"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_MEKO_HN"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_FREMM"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_ABurke"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_052C"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_052D"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Yasen"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_214"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_209"):
+				{
+					[_vehicle, 3] call HAFM_fnc_SubAttachment;			
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_BUYAN"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_MisBoat_BLU"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "A2_Fregata"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Frigate_OPF"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_Corvette_OPF"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};							
+				case (_vehicle isKindOf "HAFM_PBoat_OPF"):
+				{
+					_vehicle setDir 326.266;			
+					_vehicle setPosASL [3083.24,12643.6,3.85283];
+				};
+				default	// for all other watercraft
+				{
+					_vehicle setDir 231.518;			
+					_vehicle setPosASL [3032.3,12657.3,6.53332];				
+				};			
+			};	
+		};
+
+/*********************************************************************************************************/
 
     if (isNil "_vehicle") exitWith {
       diag_log format["ERROR: Could not restore vehicle %1 for player %2(%3)", _vehicle_id,  (name _player), _uid];

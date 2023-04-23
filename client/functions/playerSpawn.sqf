@@ -45,7 +45,7 @@ if (!isNil "pvar_teamSwitchList" && playerSide in [BLUFOR,OPFOR]) then
 		_sideName = switch (_prevSide) do
 		{
 			case BLUFOR: { "BLUFOR" };
-			case OPFOR:  { "OPFOR" };
+			case OPFOR:  { "" };
 		};
 
 		_msgBox = [format [localize "STR_WL_Loading_Teamswitched", _sideName]] spawn BIS_fnc_guiMessage;
@@ -61,7 +61,7 @@ if (!isNil "pvar_teamSwitchList" && playerSide in [BLUFOR,OPFOR]) then
 if (isNil "playerData_alive" || !isNil "playerData_resetPos") then
 {
 	[player, "AmovPknlMstpSnonWnonDnon"] call switchMoveGlobal;
-
+	
 	9999 cutText ["Loading...", "BLACK", 0.01];
 
 	true spawn client_respawnDialog;
@@ -97,7 +97,26 @@ player setVelocity [0,0,0];
 [player, false] call fn_hideObjectGlobal;
 player allowDamage true;
 
+/*if (player getVariable "inRadiationZone") then
+{
+	//deletevehicle Rad_Zone_1;
+    hint parseText format["<t size=""1.10"" font=""PuristaMedium"" color=""#00F00F"">Radiation is leaving your Body</t>"];
+	player setVariable ['noradiat', ppEffectCreate ['ChromAberration', 200]];
+	(player getVariable 'noradiat') ppEffectEnable true;
+	(player getVariable 'noradiat') ppEffectAdjust [0.0, 0.0, true];
+	(player getVariable 'noradiat') ppEffectCommit 10;
+		
+	player setVariable ['noradiat2', ppEffectCreate ['ColorInversion', 500]];
+	(player getVariable 'noradiat2') ppEffectEnable true;
+	(player getVariable 'noradiat2') ppEffectAdjust [0, 0, 0];
+	(player getVariable 'noradiat2') ppEffectCommit 10;
+	player setVariable ["inRadiationZone", false];
+	if !(isNil Rad_Zone_1) then {_radPos = [radPosRepeat] call compile preprocessFileLineNumbers "addons\scripts\Radiation_Zone.sqf";};
+	
+};*/
+
 9999 cutText ["", "BLACK IN"];
 
 playerSpawning = false;
 player setVariable ["playerSpawning", false, true];
+

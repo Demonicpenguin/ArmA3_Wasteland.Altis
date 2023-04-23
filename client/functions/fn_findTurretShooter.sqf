@@ -8,8 +8,6 @@
 
 params [["_target",objNull,[objNull]], ["_vehicle",objNull,[objNull]], ["_ammo","",[""]]];
 
-if (_ammo isEqualTo "") exitWith { driver _vehicle };
-
 private _offset = _vehicle worldToModelVisual (_target modelToWorldVisual [0,0,0]);
 private _possibleShooters = [];
 private _possiblePaths = [];
@@ -23,12 +21,10 @@ private ["_suspect", "_mags", "_path", "_magAmmo", "_magAmmoExpl"];
 		_x select 3
 	};
 
-	if (_path isEqualTo []) then { _path = [-1] };
-
-	_mags = (magazinesAllTurrets _vehicle) select {(_x select 1) isEqualTo _path};
+	_mags = _vehicle magazinesTurret _path;
 
 	{
-		_magAmmo = getText (configFile >> "CfgMagazines" >> (_x select 0) >> "ammo");
+		_magAmmo = getText (configFile >> "CfgMagazines" >> _x >> "ammo");
 		_magAmmoExpl = getText (configFile >> "CfgAmmo" >> _magAmmo >> "explosion"); // Explosive projectile
 
 		if (_magAmmo == _ammo || _magAmmoExpl == _ammo) exitWith

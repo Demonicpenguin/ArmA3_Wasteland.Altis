@@ -10,3 +10,6 @@ diag_log format["Message %1",messageSystem];
 _hint = messageSystem;
 if (_hint isEqualType "") then { _hint = parseText _hint };
 hint _hint;
+
+
+

@@ -11,7 +11,6 @@ class BIS_fnc_debugConsoleExec {}; // secure function made by Killzone Kid for B
 class BIS_fnc_effectKilledAirDestruction {};
 class BIS_fnc_effectKilledSecondaries {};
 class BIS_fnc_initVehicle {}; // required for vehicle parts like tank cages
-class BIS_fnc_setCustomSoundController {}; // police siren
 class BIS_fnc_objectVar {};
 // do NOT whitelist BIS_fnc_execVM or BIS_fnc_spawn, hackers will exploit them!
 
@@ -52,6 +51,7 @@ class FAR_fnc_headshotHitPartEH {};
 class FAR_fnc_public_EH {};
 class mf_remote_refuel {};
 class mf_remote_repair {};
+class mf_remote_extinguish {};
 class mf_remote_syphon {};
 
 // Third-party
@@ -66,10 +66,51 @@ class A3W_fnc_addMagazineTurretOaheli {};
 class A3W_fnc_addMagazineTurretOcas {};
 class A3W_fnc_addMagazineTurretUav2 {};
 class A3W_fnc_hideObjectGlobal {};
+class A3W_fnc_movedObjectGlobal {};
 class A3W_fnc_lock {};
 class A3W_fnc_removeMagazinesTurret {};
 class A3W_fnc_setVectorUpAndDir { jip = 1; };
 class A3W_fnc_setVehicleAmmoDef {};
 class A3W_fnc_unflip {};
+class A3W_fnc_cleanupObjects {};
+
+// Other third-party
 class APOC_srv_startAirdrop { allowedTargets = 2; };
+class Monkey_srv_StartAirSupport { allowedTargets = 2; };
+class FZ_fnc_discordEmbed { allowedTargets = 2; };
 class JTS_FNC_SENT {};
+
+class GOM_fnc_carpetbombing {allowedTargets = 2;};
+class GOM_fnc_airRaidSirens {allowedTargets = 1;};
+
+// Third-party
+
+class AR_Client_Rappel_From_Heli { allowedTargets=0; };
+class AR_Hint { allowedTargets=1; };
+class AR_Hide_Object_Global { allowedTargets=2; };
+class AR_Enable_Rappelling_Animation { allowedTargets=2; };
+class AR_Rappel_From_Heli { allowedTargets=2; };
+class AUR_Hint { allowedTargets=1; };
+class AUR_Hide_Object_Global { allowedTargets=2; };
+class AUR_Enable_Rappelling_Animation_Global { allowedTargets=2; };
+class AUR_Play_Rappelling_Sounds_Global { allowedTargets=2; };
+class A3W_fnc_aj_s_refreshZeus { allowedTargets = 2; };     //Zeus Server
+class saky_fnc_irToIncendiary { jip = 1; };
+
+class Soul_AutoLoad { allowedTargets = 0; };
+
+//Sanctuary Tactical
+//class STSiren { allowedTargets = 0; };
+//class STYelp { allowedTargets = 0; };
+//class STWelcome {};
+class say3d {};
+//class STDoorController { allowedTargets = 2; };
+
+//VCOM AI
+class vcm_serverask { allowedTargets = 0;jip = 1; };
+class VCM_PublicScript { allowedTargets = 0;jip = 1; };
+class SpawnScript { allowedTargets = 0;jip = 1; };
+class VCM_fnc_KnowAbout { allowedTargets = 0;jip = 1; };
+
+class HARC_fn_timeSkip { allowedTargets = 2; };
+	

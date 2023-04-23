@@ -510,6 +510,65 @@ class w_RscXListBox
 	sizeEx = 0.035;
 };
 
+class RscHTML
+{
+	idc = -1;
+	type = CT_HTML;
+	style = ST_LEFT;
+	colorText[] = {Dlg_Color_White, 1};
+    colorLink[] = {0.05, 0.2, 0.05, 1};
+    colorBold[] = {0, 1, 1, 1};
+    colorBackground[] = {0, 0, 0, 0};
+    colorLinkActive[] = {0, 0, 0.2, 1};
+    colorPicture[] = {Dlg_Color_Black, 1};
+    colorPictureLink[] = {Dlg_Color_Black, 1};
+    colorPictureSelected[] = {Dlg_Color_Black, 1};
+    colorPictureBorder[] = {Dlg_Color_Black, 1};
+	x = 0;
+	y = 0;
+	w = 1;
+	h = 1;
+	filename = "";
+	prevPage = "\ca\ui\data\arrow_left_ca.paa";
+    nextPage = "\ca\ui\data\arrow_right_ca.paa";
+
+    
+    class HeadingStyle {
+        font = "PuristaBold";
+        fontBold = "TahomaB";
+        sizeEx = Dlg_TEXTHGT;
+    };
+    
+    class H1: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT * 1.5;
+    };
+    
+    class H2: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT * 1.4;
+    };
+    
+    class H3: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT * 1.3;
+    };
+    
+    class H4: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT * 1.2;
+    };
+    
+    class H5: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT * 1.1;
+    };
+    
+    class H6: HeadingStyle {
+        sizeEx = Dlg_TEXTHGT;
+    };
+    
+    class P: HeadingStyle {
+       sizeEx = Dlg_TEXTHGT;
+    };
+};
+
+
 class w_RscXSliderH
 {
 	type = CT_XSLIDER;
@@ -590,24 +649,24 @@ class w_RscMapControl
 	alphaFadeEndScale = 2;
 	colorTrails[] = {0.84, 0.76, 0.65, 0.15};
 	colorTrailsFill[] = {0.84, 0.76, 0.65, 0.65};
-	widthRailWay = 4;
 	fontLabel = "RobotoCondensed";
 	sizeExLabel = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	fontGrid = "TahomaB";
 	sizeExGrid = 0.02;
 	fontUnits = "TahomaB";
 	sizeExUnits = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
-	fontNames = "RobotoCondensed";
+	fontNames = "EtelkaNarrowMediumPro";
 	sizeExNames = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8) * 2";
 	fontInfo = "RobotoCondensed";
 	sizeExInfo = "(((((safezoneW / safezoneH) min 1.2) / 1.2) / 25) * 0.8)";
 	fontLevel = "TahomaB";
 	sizeExLevel = 0.02;
 	text = "#(argb,8,8,3)color(1,1,1,1)";
+	widthRailWay = 4;
 	idcMarkerColor = -1; 
 	idcMarkerIcon = -1; 
 	textureComboBoxColor = "#(argb,8,8,3)color(1,1,1,1)"; 
-	showMarkers = 1; 
+	showMarkers = 1;	
 
 	class Legend {
 		colorBackground[] = {1, 1, 1, 0.5};
@@ -625,7 +684,7 @@ class w_RscMapControl
 	};
 	class Command {
 		color[] = {1, 1, 1, 1};
-		icon = "\a3\ui_f\data\map\mapcontrol\waypoint_ca.paa";
+		icon = "\A3\ui_f\data\map\mapcontrol\waypoint_ca.paa";
 		size = 18;
 		importance = 1;
 		coefMin = 1;
@@ -655,7 +714,7 @@ class w_RscMapControl
 	};
 	class CustomMark {
 		color[] = {1, 1, 1, 1};
-		icon = "\a3\ui_f\data\map\mapcontrol\custommark_ca.paa";
+		icon = "\A3\ui_f\data\map\mapcontrol\custommark_ca.paa";
 		size = 18;
 		importance = 1;
 		coefMin = 1;
@@ -807,10 +866,10 @@ class w_RscMapControl
 	class Stack {
 		color[] = {0, 0, 0, 1};
 		icon = "\A3\ui_f\data\map\mapcontrol\stack_ca.paa";
-		size = 16;
+		size = 20;
 		importance = "2 * 16 * 0.05";
-		coefMin = 0.4;
-		coefMax = 2;
+		coefMin = 0.9;
+		coefMax = 4;
 	};
 	class Ruin {
 		color[] = {0, 0, 0, 1};
@@ -841,7 +900,7 @@ class w_RscMapControl
 		importance = 1;
 		coefMin = 1;
 		coefMax = 1;
-		icon = "\a3\ui_f\data\map\mapcontrol\waypoint_ca.paa";
+		icon = "\A3\ui_f\data\map\mapcontrol\waypoint_ca.paa";
 		size = 18;
 	};
 	class WaypointCompleted {
@@ -849,7 +908,7 @@ class w_RscMapControl
 		importance = 1;
 		coefMin = 1;
 		coefMax = 1;
-		icon = "\a3\ui_f\data\map\mapcontrol\waypointcompleted_ca.paa";
+		icon = "\A3\ui_f\data\map\mapcontrol\waypointcompleted_ca.paa";
 		size = 18;
 	};
 	class power {

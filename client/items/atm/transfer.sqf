@@ -17,7 +17,7 @@
 #define MSG_CONFIRM_LINE3 "Total cost: $%1"
 
 disableSerialization;
-private ["_dialog", "_input", "_accDropdown", "_selAcc", "_selAccName", "_amount", "_fee", "_feeAmount", "_total", "_balance", "_maxBalance", "_destBalance", "_confirmMsg", "_transferKey", "_deposit", "_depositall", "_withdraw", "_controls"];
+private ["_dialog", "_input", "_accDropdown", "_selAcc", "_selAccName", "_amount", "_fee", "_feeAmount", "_total", "_balance", "_maxBalance", "_destBalance", "_confirmMsg", "_transferKey", "_deposit", "_withdraw", "_controls"];
 
 _dialog = findDisplay AtmGUI_IDD;
 
@@ -93,9 +93,8 @@ format [MSG_CONFIRM_LINE3, [_total] call fn_numbersText];
 	_input = _dialog displayCtrl AtmAmountInput_IDC;
 	_accDropdown = _dialog displayCtrl AtmAccountDropdown_IDC;
 	_deposit = _dialog displayCtrl AtmDepositButton_IDC;
-	_depositall = _dialog displayCtrl AtmDepositAllButton_IDC;
 	_withdraw = _dialog displayCtrl AtmWithdrawButton_IDC;
-	_controls = [_input, _accDropdown, _deposit, _depositall, _withdraw];
+	_controls = [_input, _accDropdown, _deposit, _withdraw];
 
 	{ _x ctrlEnable false } forEach _controls;
 

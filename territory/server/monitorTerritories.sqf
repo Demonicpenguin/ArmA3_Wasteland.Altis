@@ -526,6 +526,7 @@ _handleCapPointTick = {
 if (["A3W_territoryPayroll"] call isConfigOn) then
 {
 	execVM "territory\server\territoryPayroll.sqf";
+	execVM "territory\server\territoryPayrollacc.sqf";	
 };
 
 //////////////////////////////////////////////////////////////////////////////

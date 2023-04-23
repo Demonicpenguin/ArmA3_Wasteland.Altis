@@ -8,7 +8,7 @@
 #define REARM_TIME_SLICE 5
 #define REPAIR_TIME_SLICE 1
 #define REFUEL_TIME_SLICE 1
-#define PRICE_RELATIONSHIP 10 // resupply price = brand-new store price divided by PRICE_RELATIONSHIP
+#define PRICE_RELATIONSHIP 2 // resupply price = brand-new store price divided by PRICE_RELATIONSHIP
 #define RESUPPLY_TIMEOUT 30
 
 // Check if mutex lock is active.
@@ -38,7 +38,7 @@ _resupplyThread = [_vehicle, _unit] spawn
 
 	scopeName "resupplyTruckThread";
 
-	_price = 1000; // price = 1000 for vehicles not found in vehicle store
+	_price = 50000; // price = 1000 for vehicles not found in vehicle store
 
 	_variant = _vehicle getVariable ["A3W_vehicleVariant", ""];
 	if (_variant != "") then { _variant = "variant_" + _variant };
@@ -92,7 +92,9 @@ _resupplyThread = [_vehicle, _unit] spawn
 			};
 
 			// Abort if no resupply vehicle in proximity
-			_checkCondition = {{alive _x && {_x getVariable ["A3W_resupplyTruck", false]}} count (_vehicle nearEntities ["AllVehicles", RESUPPLY_TRUCK_DISTANCE]) == 0};
+			_checkCondition = {{alive _x && {_x getVariable ["A3W_resupplyTruck", false]}} count (nearestObjects [_vehicle, ["AllVehicles", "rhsusf_mags_crate", "Land_RepairDepot_01_green_F", "Land_Pier_Box_F"], RESUPPLY_TRUCK_DISTANCE, true]) == 0 };
+			
+			//_checkCondition = {{alive _x && {_x getVariable ["A3W_resupplyTruck", false]}} count (_vehicle nearEntities ["AllVehicles", RESUPPLY_TRUCK_DISTANCE]) == 0};
 			if (call _checkCondition) exitWith
 			{
 				_pauseText = "Move closer to a resupply vehicle.";
@@ -151,7 +153,7 @@ _resupplyThread = [_vehicle, _unit] spawn
 	// Check if player has enough money
 	_checkPlayerMoney =
 	{
-		if (player getVariable ["cmoney",0] < _price) then
+		if (player getVariable ["bmoney",0] < _price) then
 		{
 			_text = format ["%1\n%2", format ["Not enough money, you need $%1 to resupply %2", _price, _vehName], "Resupply sequence aborted"];
 			[_text, 10] call mf_notify_client;
@@ -187,7 +189,7 @@ _resupplyThread = [_vehicle, _unit] spawn
 
 		_vehicle engineOn false;
 
-		if (player getVariable ["cmoney",0] >= _price) then
+		if (player getVariable ["bmoney",0] >= _price) then
 		{
 			_msg = format ["%1<br/><br/>%2", format ["It will cost you $%1 to resupply %2.", _price, _vehName], "Do you want to proceed?"];
 
@@ -201,8 +203,8 @@ _resupplyThread = [_vehicle, _unit] spawn
 		call _checkPlayerMoney;
 
 		//start resupply here
-		//player setVariable ["cmoney", (player getVariable ["cmoney",0]) - _price, true];
-		[player, -_price] call A3W_fnc_setCMoney;
+		player setVariable ["bmoney", (player getVariable ["bmoney",0]) - _price, true];
+		//[player, -_price] call A3W_fnc_setCMoney;
 		_text = format ["%1\n%2", format ["You paid $%1 to resupply %2.", _price, _vehName], "Please stand by..."];
 		[_text, 10] call mf_notify_client;
 		[] spawn fn_savePlayerData;
@@ -412,6 +414,23 @@ _resupplyThread = [_vehicle, _unit] spawn
 			};
 		};
 
+		_supplies = 100;
+		_vehicles = nearestObjects [_vehicle, ["AllVehicles", "rhsusf_mags_crate", "Land_RepairDepot_01_green_F", "Land_Pier_Box_F"], RESUPPLY_TRUCK_DISTANCE, true];
+
+		{
+
+			if( _x getVariable ["A3W_resupplyTruck", false] ) then {
+
+				_x setVariable ["A3W_resupplyCount", (_x getVariable ["A3W_resupplyCount", 0]) - 1, true];
+
+				//Crate, Depot OR Truck
+				_supplies = _x getVariable ["A3W_resupplyCount", 0];
+
+			};
+
+			if( _supplies != 100 ) exitWith {};
+
+		} forEach _vehicles;
 		titleText ["Your vehicle is ready.", "PLAIN DOWN", 0.5];
 	};
 };

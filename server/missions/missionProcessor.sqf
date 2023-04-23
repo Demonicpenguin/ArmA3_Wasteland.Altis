@@ -9,13 +9,14 @@ if (!isServer) exitwith {};
 #define MISSION_LOCATION_COOLDOWN (10*60)
 #define MISSION_TIMER_EXTENSION (15*60)
 
-private ["_controllerSuffix", "_missionTimeout", "_availableLocations", "_missionLocation", "_leader", "_marker", "_failed", "_complete", "_startTime", "_oldAiCount", "_leaderTemp", "_newAiCount", "_adjustTime", "_lastPos", "_floorHeight"];
+private ["_controllerSuffix", "_missionTimeout", "_availableLocations", "_missionLocation", "_leader", "_marker", "_failed", "_complete", "_startTime", "_oldAiCount", "_leaderTemp", "_newAiCount", "_adjustTime", "_lastPos", "_unitPos", "_floorHeight", "_startAiCount", "_reinforcementsCalled", "_reinforceChanceRoll", "_reinforcementsToCall", "_aiGroup2"];
 
 // Variables that can be defined in the mission script :
-private ["_missionType", "_locationsArray", "_aiGroup", "_missionPos", "_missionPicture", "_missionHintText", "_successHintMessage", "_failedHintMessage"];
+private ["_missionType", "_locationsArray", "_aiGroup", "_missionPos", "_missionPicture", "_missionHintText", "_successHintMessage", "_failedHintMessage", "_reinforceChance", "_minReinforceGroups","_maxReinforceGroups"];
 
 _controllerSuffix = param [0, "", [""]];
 _aiGroup = grpNull;
+_aiGroup2 = grpNull;
 
 if (!isNil "_setupVars") then { call _setupVars };
 
@@ -36,7 +37,24 @@ if (!isNil "_locationsArray") then
 	_missionLocation = (_availableLocations call BIS_fnc_selectRandom) select 0;
 	[_locationsArray, _missionLocation, true] call setLocationState;
 	[_locationsArray, _missionLocation, markerPos _missionLocation] call cleanLocationObjects; // doesn't matter if _missionLocation is not a marker, the function will know
+
+	//The Scotsman: Attempt to remove any previously spawned mission objects
+	private _objects = nearestObjects [(markerPos _missionLocation), ["All"], 25];
+
+	{
+
+		//Scan
+		if( (_x getVariable ["A3W_Mission_Object", false]) ) then {
+
+			diag_log format ["Remove stale mission Object:(%1)", typeOf _x];
+			deleteVehicle _x;
+
+		};
+
+	} forEach _objects;
+
 };
+//};
 
 if (!isNil "_setupObjects") then { call _setupObjects };
 
@@ -62,6 +80,21 @@ _complete = false;
 _startTime = diag_tickTime;
 _oldAiCount = 0;
 
+//Logic and Variables for AI Reinforcements///////////////////////////////////////////////
+_reinforcementsCalled = false;
+_startAiCount = 0;
+_startAiCount = count units _aiGroup;
+_reinforceChanceRoll = floor (random 99); //When processor gets called for a mission exe, what did fate say for reinforcements?
+if (isNil "_minReinforceGroups") then { _minReinforceGroups = 1};
+if (isNil "_maxReinforceGroups") then { _maxReinforceGroups = 1};
+if (isNil "_reinforceChance") then { _reinforceChance = 0};
+if (_minReinforceGroups > _maxReinforceGroups) then {_maxReinforceGroups = _minReinforceGroups};//Prevents errors later on if a typo is in mission config
+_reinforcementsToCall = 0; //initialize variable
+_reinforcementsToCall = ceil (random _maxReinforceGroups); //Find random number of reinforcements to be sent, up to max
+if (_minReinforceGroups > _reinforcementsToCall) then {_reinforcementsToCall = _minReinforceGroups}; //Make sure we call for at least the minimum number of groups
+//End of reinforcement Block///////////////////////////////////////////////////////////////
+
+
 if (isNil "_ignoreAiDeaths") then { _ignoreAiDeaths = false };
 
 waitUntil
@@ -74,11 +107,25 @@ waitUntil
 	if (!alive _leaderTemp) then
 	{
 		{
-			if (alive _x) exitWith
-			{
+			//Try to find leader in a vehicle
+			if (alive _x && _x != (vehicle _x)) exitWith {
+
 				_aiGroup selectLeader _x;
 				_leaderTemp = _x;
 			};
+
+		} forEach units _aiGroup;
+		
+
+		//Process Ground Units (when no mounted unit found)
+		//if (!alive _leaderTemp) then // possible error
+		{
+			//Try to find leader in a vehicle		
+			if (alive _x) exitWith
+				{
+					_aiGroup selectLeader _x;
+					_leaderTemp = _x;
+				};
 		} forEach units _aiGroup;
 	};
 
@@ -90,9 +137,36 @@ waitUntil
 		_adjustTime = if (_missionTimeout < MISSION_TIMER_EXTENSION) then { MISSION_TIMER_EXTENSION - _missionTimeout } else { 0 };
 		_startTime = _startTime max (diag_tickTime - ((MISSION_TIMER_EXTENSION - _adjustTime) max 0));
 	};
-
 	_oldAiCount = _newAiCount;
 
+	if (!isNull _leaderTemp) then {
+		_leader = _leaderTemp;
+		_unitPos = _leader call fn_getPos3D;
+	}; // Update current leader
+//// AI Reinforcement Section  //Apoc ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//hint format["Reinforce Chance : %1 Reinforce Dice Roll : %2",_reinforceChance,_reinforceChanceRoll]; // for debugging
+	
+	if (((_newAiCount < _startAiCount/2) && (!_reinforcementsCalled)) && !(MISSION_PROC_TYPE_NAME == "Bounty")) then
+	{
+		if (_reinforceChance > _reinforceChanceRoll) then 
+		{
+			hint format["Watch the skies, parachute reinforcements are on their way"];			
+			for "_i" from 1 to _reinforcementsToCall step 1 do{
+				nul = [_marker,1,true,false,1500,"random",true,200,150,8,0.5,50,true,false,false,true,player,false,"default",_aigroup,nil,1,false] execVM "addons\AI_Spawn\heliParadrop.sqf";
+				diag_log format ["WASTELAND SERVER - %1 Mission%2 Reinforcements Called: %3.  %5 of %4 AI remaining", MISSION_PROC_TYPE_NAME, _controllerSuffix, _missionType, _startAiCount, _newAiCount];
+				_reinforcementsCalled = True;
+				sleep 30;
+			};
+			if ((floor random(100))>85) then 
+			{
+				hint format["Further reinforcements have been deployed, an attack chopper has been scrambled."];			
+				_aiGroup2 = [_marker] execVM "server\missions\factoryMethods\createReinforceAttackHelicopter.sqf";
+				diag_log format ["WASTELAND SERVER - %1 Mission%2 Attack Helo Called: %3.  %5 of %4 AI remaining", MISSION_PROC_TYPE_NAME, _controllerSuffix, _missionType, _startAiCount, _newAiCount];
+			};
+		};
+	};
+//// AI Reinforcement Section  //Apoc ////////////////////////////////////////////////////////////////////////////////////////////////////
 	if (!isNull _leaderTemp) then { _leader = _leaderTemp }; // Update current leader
 
 	if (!isNil "_waitUntilMarkerPos") then { _marker setMarkerPos (call _waitUntilMarkerPos) };
@@ -114,6 +188,11 @@ if (_failed) then
 	// Mission failed
 
 	{ moveOut _x; deleteVehicle _x } forEach units _aiGroup;
+
+	if (count units _aiGroup2 > 0) then
+	{
+		{ moveOut _x; deleteVehicle _x } forEach units _aiGroup2; //This group only exists if attack heli reinforcement is called upon
+	};
 
 	if (!isNil "_failedExec") then { call _failedExec };
 
@@ -164,31 +243,22 @@ else
 	{
 		_vehicle setVariable ["R3F_LOG_disabled", false, true];
 		_vehicle setVariable ["A3W_missionVehicle", true, true];
-		_vehicle setVariable ["A3W_lockpickDisabled", nil, true];
 
-		if (!isNil "fn_manualVehicleSave" && !(_vehicle getVariable ["A3W_skipAutoSave", false])) then
+		if (!isNil "fn_manualVehicleSave") then
 		{
 			_vehicle call fn_manualVehicleSave;
 		};
 	};
-
-	private _convoyAutoSave = ["A3W_missionVehicleSaving"] call isConfigOn;
 
 	if (!isNil "_vehicles" && {typeName _vehicles == "ARRAY"}) then
 	{
 		{
 			if (!isNil "_x" && {typeName _x == "OBJECT"}) then
 			{
-				if (!_convoyAutoSave) then
-				{
-					_x setVariable ["A3W_skipAutoSave", true, true];
-				};
-
 				_x setVariable ["R3F_LOG_disabled", false, true];
 				_x setVariable ["A3W_missionVehicle", true, true];
-				_x setVariable ["A3W_lockpickDisabled", nil, true];
 
-				if (!isNil "fn_manualVehicleSave" && !(_x getVariable ["A3W_skipAutoSave", false])) then
+				if (!isNil "fn_manualVehicleSave") then
 				{
 					_x call fn_manualVehicleSave;
 				};
@@ -206,9 +276,16 @@ else
 	call missionHint;
 
 	diag_log format ["WASTELAND SERVER - %1 Mission%2 complete: %3", MISSION_PROC_TYPE_NAME, _controllerSuffix, _missionType];
+
+	if (count units _aiGroup2 > 0) then
+	{
+		sleep 60; //delay to give heli a chance to track down the victors
+		{ moveOut _x; deleteVehicle _x } forEach units _aiGroup2; //This group only exists if attack heli reinforcement is called upon
+	};
 };
 
 deleteGroup _aiGroup;
+deleteGroup _aiGroup2;
 deleteMarker _marker;
 
 if (!isNil "_locationsArray") then

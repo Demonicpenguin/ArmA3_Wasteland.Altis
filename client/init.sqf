@@ -24,6 +24,8 @@ respawnDialogActive = false;
 groupManagmentActive = false;
 pvar_PlayerTeamKiller = [];
 doCancelAction = false;
+spawnBeaconDetectorInProgress = false;
+AdminUniformOn=false;
 
 //Initialization Variables
 playerCompiledScripts = false;
@@ -31,7 +33,7 @@ playerSetupComplete = false;
 
 waitUntil {!isNull player && time > 0};
 
-//removeAllWeapons player;
+removeAllWeapons player;
 player switchMove "";
 
 // initialize actions and inventory
@@ -48,6 +50,8 @@ if !(playerSide in [BLUFOR,OPFOR,INDEPENDENT]) exitWith
 	endMission "LOSER";
 };
 
+// Teambalancer
+//call compile preprocessFileLineNumbers "client\functions\teamBalance.sqf";
 //Setup player events.
 if (!isNil "client_initEH") then { player removeEventHandler ["Respawn", client_initEH] };
 player addEventHandler ["Respawn", { _this spawn onRespawn }];
@@ -158,12 +162,19 @@ A3W_clientSetupComplete = compileFinal "true";
 
 A3W_scriptThreads pushBack execVM "addons\fpsFix\vehicleManager.sqf";
 A3W_scriptThreads pushBack execVM "addons\Lootspawner\LSclientScan.sqf";
+
 [] execVM "client\functions\drawPlayerIcons.sqf";
 [] execVM "addons\camera\functions.sqf";
 [] execVM "addons\UAV_Control\functions.sqf";
+[] execVM "addons\cctv\functions.sqf";				// CCTV Camera addon
+
+
+//Xside stuff
+if(hasInterface) then{[] execVM "addons\statusBar\statusBar.sqf"};
 
 call compile preprocessFileLineNumbers "client\functions\generateAtmArray.sqf";
 [] execVM "client\functions\drawPlayerMarkers.sqf";
+[] execVM "addons\aj\antiglitch\aj_c_checkloop.sqf";
 
 inGameUISetEventHandler ["Action", "_this call A3W_fnc_inGameUIActionEvent"];
 
@@ -177,3 +188,4 @@ inGameUISetEventHandler ["Action", "_this call A3W_fnc_inGameUIActionEvent"];
 		_x setVariable ["side", playerSide, true];
 	};
 } forEach pvar_spawn_beacons;
+

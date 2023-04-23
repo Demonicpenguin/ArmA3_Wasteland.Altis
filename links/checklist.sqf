@@ -1,0 +1,2 @@
+copyToClipboard "https://www.dropbox.com/s/zfv60saj0xa1l4b/AH-64D%20CHECKLIST.pdf?dl=0";
+hint "Checklist Link has been copied to clipboard, now press Alt Tab together to drop to desktop, open browser and paste the link in address bar Ctrl v";

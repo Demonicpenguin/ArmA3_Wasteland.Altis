@@ -200,6 +200,58 @@ switch (toLower _type) do
 		_sender setVariable [_transferKey, nil, true];
 		_event = ["atmTransferSent", _result, name _recipient];
 	};
+	// ########### <CUSTOM> ###########
+	case "admintranfer": {
+		params ["", "", ["_recipient",objNull,[objNull]], ["_amount",0,[0]]];
+		_sender = _player;
+		_total = _amount;
+
+		if (_total != 0) then {
+			if (!isPlayer _sender || !isPlayer _recipient ) exitWith {}; // invalid sender or recipient
+
+			_rBalance = _recipient getVariable ["bmoney", 0];
+
+			if (_rBalance + _amount > ["A3W_atmMaxBalance", 1000000] call getPublicVar) exitWith {}; // recipient would exceed or has reached max balance
+			_rBalance = _rBalance + _amount;
+
+			_recipient setVariable ["bmoney", _rBalance, true];
+
+			_senderUID = getPlayerUID _sender;
+			_recipientUID = getPlayerUID _recipient;
+
+			if (["A3W_playerSaving"] call isConfigOn) then {
+				[_recipientUID, [["BankMoney", _rBalance]], []] call fn_saveAccount;
+			};
+
+			_result = _amount;
+
+			["adminTransferReceived", _result, name _sender] remoteExecCall ["A3W_fnc_playerEventServer", _recipient];
+			if (!isNil "fn_logBankTransfer") then {
+				[name _sender, _senderUID, side group _sender, name _recipient, _recipientUID, side group _recipient, _amount, 0] call fn_logBankTransfer;
+			};
+		};
+
+		_event = ["adminTransferSent", _result, name _recipient];
+	};
+
+	case "bank": {
+		params ["", "", ["_amount",0,[0]]];
+
+		if (_amount != 0) then{
+			_balance = _player getVariable ["bmoney", 0];
+			if (_amount < 0 && _balance < abs _amount) exitWith {}; // player has not enough funds for withdrawal
+			_newBalance = _balance + _amount;
+			if (_newBalance > ["A3W_atmMaxBalance", 1000000] call getPublicVar) exitWith {}; // account would exceed or has reached max balance
+			_player setVariable ["bmoney", _newBalance, true];
+			if (["A3W_playerSaving"] call isConfigOn) then {
+				[getPlayerUID _player, [["BankMoney", _newBalance]], []] call fn_saveAccount;
+			};
+			_result = _amount;
+		};
+
+		_event = ["transaction", _result];
+	};
+	// ########### </CUSTOM> ###########
 };
 
 _event remoteExecCall ["A3W_fnc_playerEventServer", _player];

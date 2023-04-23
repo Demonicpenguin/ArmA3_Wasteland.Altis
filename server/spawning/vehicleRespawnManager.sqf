@@ -21,14 +21,34 @@ while {true} do
 
 		{
 			_startTime = diag_tickTime;
-			_veh = _x get "_veh";
+			_veh = [_x, "Vehicle", objNull] call fn_getFromPairs;
 
 			// Check if vehicle is not being towed or moved
 			if (isNull (_veh getVariable ["R3F_LOG_est_transporte_par", objNull]) &&
 			    isNull (_veh getVariable ["R3F_LOG_est_deplace_par", objNull])) then
 			{
 				_settings = _x;
-				(values _settings) params (keys _settings); // automagic assignation
+
+				private ["_vehClass", "_startPos", "_lastSeenAlive", "_respawnPos", "_respawnTimer", "_minDistance", "_desertedTimer", "_proxyTimer", "_proxyDistance", "_desertedTimeout", "_brokenTimeout"];
+				{
+					_key = _x select 0;
+					_value = _x select 1;
+
+					switch (_key) do
+					{
+						case "Class":            { _vehClass = _value };
+						case "StartPos":         { _startPos = _value };
+						case "LastSeenAlive":    { _lastSeenAlive = _value };
+						case "RespawnPos":       { _respawnPos = _value };
+						case "RespawnTimer":     { _respawnTimer = _value };
+						case "MinDistance":      { _minDistance = _value };
+						case "DesertedTimer":    { _desertedTimer = _value };
+						case "ProxyTimer":       { _proxyTimer = _value };
+						case "ProxyDistance":    { _proxyDistance = _value };
+						case "DesertedTimeout":  { _desertedTimeout = _value };
+						case "BrokenTimeout":    { _brokenTimeout = _value };
+					};
+				} forEach _settings;
 
 				_proxyTimer = _proxyTimer - _desertedTimer;
 
@@ -92,8 +112,8 @@ while {true} do
 						_brokenTimeout = 0;
 					};
 
-					_settings set ["_brokenTimeout", _brokenTimeout];
-					_settings set ["_lastSeenAlive", diag_tickTime];
+					[_settings, "BrokenTimeout", _brokenTimeout] call fn_setToPairs;
+					[_settings, "LastSeenAlive", diag_tickTime] call fn_setToPairs;
 				}
 				else // The vehicle is destroyed
 				{
@@ -155,7 +175,7 @@ while {true} do
 						_desertedTimeout = 0;
 					};
 
-					_settings set ["_desertedTimeout", _desertedTimeout];
+					[_settings, "DesertedTimeout", _desertedTimeout] call fn_setToPairs;
 				};
 
 				// Respawn vehicle

@@ -59,7 +59,7 @@ fn_deletePlayerData =
 				playerData_ghostingTimer = nil;
 				if (!alive player) then { breakOut "pvar_applyPlayerData" };
 
-				9999 cutText ["Loading...", "BLACK", 0.01];
+			//	9999 cutText ["Loading...", "BLACK", 0.01];
 			};
 
 			playerData_alive = true;
@@ -74,11 +74,11 @@ fn_deletePlayerData =
 			{
 				if (_preload) then
 				{
-					9999 cutText ["Preloading previous location...", "BLACK", 0.01];
+				//	9999 cutText ["Preloading previous location...", "BLACK", 0.01];
 					waitUntil {sleep 0.1; preloadCamera _pos};
 				};
 
-				9999 cutText ["Loading previous location...", "BLACK", 0.01];
+				//9999 cutText ["Loading previous location...", "BLACK", 0.01];
 			}
 			else
 			{
@@ -112,3 +112,7 @@ fn_deletePlayerData =
 		playerData_loaded = true;
 	};
 };
+
+addPlayerInfo = player;
+publicVariableServer "addPlayerInfo";
+

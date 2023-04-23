@@ -8,7 +8,7 @@
 
 // Salvaging of vehicle wrecks
 
-#define GET_ONE_TENTH_PRICE(PRICE) ((ceil (((PRICE) / 10) / 5)) * 5)
+#define GET_ONE_TENTH_PRICE(PRICE) ((ceil (((PRICE) / 5) / 5)) * 5) // changed to 20 percent
 
 // Check if mutex lock is active.
 if (mutexScriptInProgress) exitWith
@@ -66,47 +66,47 @@ switch (true) do
 	case (_vehClass isKindOf "Plane_Base_F"): // Planes (UAV_02 is not in Plane_Base_F)
 	{
 		_time = 30;
-		_money = 3000;
+		_money = 75000;
 	};
 	case (_vehClass isKindOf "Tank"): // Tanks & IFVs
 	{
 		_time = 30;
-		_money = 2000;
+		_money = 20000;
 	};
 	case (_vehClass isKindOf "Helicopter_Base_F" && !(_vehClass isKindOf "UAV_01_base_F")): // Helicopters (except UAV_01)
 	{
 		_time = 25;
-		_money = 1750;
+		_money = 14500;
 	};
 	case (_vehClass isKindOf "Wheeled_APC_F"): // Wheeled APCs
 	{
 		_time = 20;
-		_money = 1500;
+		_money = 15000;
 	};
 	case (_vehClass isKindOf "Truck_F" && !(_vehClass isKindOf "Van_01_base_F")): // Trucks (except Vans)
 	{
 		_time = 20;
-		_money = 1000;
+		_money = 10000;
 	};
 	case ({_vehClass isKindOf _x} count ["MRAP_01_base_F", "MRAP_02_base_F", "MRAP_03_base_F", "UAV_02_base_F"] > 0): // MRAPs and UAV_02
 	{
 		_time = 15;
-		_money = 750;
+		_money = 7500;
 	};
 	case (_vehClass isKindOf "Boat_Armed_01_base_F"): // Speedboats
 	{
 		_time = 10;
-		_money = 500;
+		_money = 5000;
 	};
 	case ({_vehClass isKindOf _x} count ["Quadbike_01_base_F", "Kart_01_Base_F", "Rubber_duck_base_F", "UAV_01_base_F"] > 0): // Quadbikes, karts, rubber boats, UAV_01
 	{
 		_time = 3;
-		_money = 50;
+		_money = 500;
 	};
 	default // Everything else
 	{
 		_time = 5;
-		_money = 100;
+		_money = 1000;
 	};
 };
 

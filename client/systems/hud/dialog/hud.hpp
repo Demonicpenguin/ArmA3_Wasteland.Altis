@@ -13,6 +13,7 @@
 #define hud_vehicle_idc 3601
 #define hud_activity_icon_idc 3602
 #define hud_activity_textbox_idc 3603
+#define hud_server_idc 3604
 
 class WastelandHud {
 	idd = -1;
@@ -95,5 +96,25 @@ class WastelandHud {
 				valign = "middle";
 			};
 		};
+
+		//BEGIN AJ
+		class WastelandHud_Server:w_RscText
+		{
+			idc = hud_server_idc;
+			type = CT_STRUCTURED_TEXT;
+			size = 0.03;
+			x = safeZoneX + safeZoneW - 0.55;
+			y = safeZoneY + (safeZoneH * (1 - (0.15 / SafeZoneH)));
+			w = 0.40; h = 0.15;
+			colorText[] = {1,1,1,1};
+			lineSpacing = 1;
+			colorBackground[] = {0,0,0,0};
+			text = "";
+			shadow = 2;
+			class Attributes {
+				align = "right";
+			};
+		};
+		//END AJ
 	};
 };

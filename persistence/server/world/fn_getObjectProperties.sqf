@@ -29,6 +29,23 @@ switch (true) do
 	{
 		_variables pushBack ["water", _obj getVariable ["water", 20]];
 	};
+	case (_obj isKindOf "Land_RepairDepot_01_green_F"):
+	{
+		_variables pushBack ["kits", _obj getVariable ["kits", 100]];
+	};
+	/*case ( _obj isKindOf "CargoNet_01_barrels_F"):
+	{
+		_variables pushBack ["jerrycanfull", _obj getVariable ["jerrycanfull", 50]];
+	};*/	
+	case (_obj isKindOf "Land_Pier_Box_F"):
+	{
+		_variables pushBack ["helipad", _obj getVariable ["helipad", false]];
+		_variables pushBack ["pad-number", _obj getVariable["pad-number", 0]];
+		_variables pushBack ["password", _obj getVariable ["password", ""]];
+		_variables pushBack ["lockedSafe", _obj getVariable ["lockedSafe", false]];
+		_variables pushBack ["A3W_resupplyTruck", _obj getVariable ["A3W_resupplyTruck", false]];
+		_variables pushBack ["A3W_resupplyCount", _obj getVariable ["A3W_resupplyCount", 0]];
+	};	
 };
 
 private _artiCount = [_obj getVariable "artillery"] param [0,0,[0]];
@@ -58,6 +75,15 @@ switch (true) do
 		_variables pushBack ["groupOnly", _obj getVariable ["groupOnly", false]];
 		_variables pushBack ["ownerName", toArray (_obj getVariable ["ownerName", "[Beacon]"])];
 	};
+	case (_obj call _isCamera):
+	{
+		_variables pushBack ["a3w_cctv_camera", true];
+		_variables pushBack ["R3F_LOG_disabled", true];
+		_variables pushBack ["camera_name", (_obj getVariable ["camera_name", nil])];
+		_variables pushBack ["camera_owner_type", (_obj getVariable ["camera_owner_type", nil])];
+		_variables pushBack ["camera_owner_value", (_obj getVariable ["camera_owner_value", nil])];
+		_variables pushBack ["mf_item_id", (_obj getVariable ["mf_item_id", nil])];
+	};	
 };
 
 if (unitIsUAV _obj) then
@@ -67,10 +93,65 @@ if (unitIsUAV _obj) then
 		_variables pushBack ["uavSide", str side _obj];
 	};
 
+
 	_variables pushBack ["uavAuto", isAutonomous _obj];
 };
 
+
 _owner = _obj getVariable ["ownerUID", ""];
+
+
+
+
+
+if (_obj iskindof "Static") then {
+	{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach
+		[
+			["bis_disabled_Door_1", 0],
+			["bis_disabled_Door_2", 0],
+			["bis_disabled_Door_3", 0],
+			["bis_disabled_Door_4", 0],
+			["bis_disabled_Door_5", 0],
+			["bis_disabled_Door_6", 0],
+			["bis_disabled_Door_7", 0],
+			["bis_disabled_Door_8", 0],
+			["Moveable", false],
+			["Baselockenabled", false],
+			["LockedDown", false],
+			["password_door_1", ""],
+			["password_door_2", ""],
+			["password_door_3", ""],
+			["password_door_4", ""],
+			["password_door_5", ""],
+			["password_door_6", ""],
+			["password_door_7", ""],
+			["password_door_8", ""],
+			["password_door_9", ""],
+			["password_door_10", ""],
+			["password_door_11", ""],
+			["password_door_12", ""],
+			["password_door_13", ""],
+			["password_door_14", ""],
+			["password_door_15", ""],
+			["password_door_16", ""],
+			["password_door_17", ""],
+			["password_door_18", ""],
+			["password_door_19", ""],
+			["password_door_20", ""],
+			["password_door_21", ""],
+			["password_door_22", ""]
+		];
+};
+
+if (_obj iskindof "thing") then {
+	{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach
+		[
+			["Moveable", false],
+			["Baselockenabled", false],
+			["LockedDown", false]
+
+		];
+};
 
 _r3fSide = _obj getVariable "R3F_Side";
 
@@ -78,6 +159,14 @@ if (!isNil "_r3fSide") then
 {
 	_variables pushBack ["R3F_Side", str _r3fSide];
 };
+
+
+
+
+
+
+
+
 
 _weapons = [];
 _magazines = [];
@@ -114,6 +203,70 @@ if (_staticWeaponSavingOn && {_class call _isStaticWeapon}) then
 _ammoCargo = getAmmoCargo _obj;
 _fuelCargo = getFuelCargo _obj;
 _repairCargo = getRepairCargo _obj;
+
+
+// BASE - SAFE LOCKING Start
+switch (true) do
+{
+	case ( {_obj isKindOf _x} count ["Land_SatellitePhone_F"]>0):
+
+	{
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach
+		[
+			["password", ""],
+			["lights", ""],
+			["lockDown", false],
+			["ManagerLevel", 1]
+		];
+	};
+	case ( _obj isKindOf "Box_NATO_AmmoVeh_F"):
+	{
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach
+		[
+			["password", ""],
+			["lockedSafe", false],
+			["A3W_inventoryLockR3F", false],
+			["R3F_LOG_disabled", false]
+		];		
+	};
+	case ( typeOf _obj in ["rhsusf_mags_crate", "Land_RepairDepot_01_green_F" ]):
+	{
+
+		//diag_log format ["[1ST] Reload Resupply:%1", (typeOf _obj)];
+
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach
+		[
+			["password", ""],
+			["lockedSafe", false],
+			["A3W_inventoryLockR3F", false],
+			["A3W_resupplyTruck", true],
+			["A3W_resupplyCount", 100],
+			["R3F_LOG_disabled", false]
+
+		];
+	};	
+	case ( _obj isKindOf "Land_MapBoard_01_Wall_Altis_F"):
+	{
+		_variables pushBack ["password", _obj getVariable ["password", ""]];
+	};
+	
+	case ({_obj isKindOf _x} count ["Box_NATO_AmmoVeh_F", "Box_EAST_AmmoVeh_F", "Box_IND_AmmoVeh_F", "B_Slingload_01_Ammo_F" ]>0):
+	{
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach [["GOM_fnc_ammoCargo", 0]];
+	};
+	case ({_obj isKindOf _x} count  ["B_Slingload_01_Repair_F", "Land_Pod_Heli_Transport_04_repair_F"]>0):
+	{
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach [["GOM_fnc_repairCargo", 0]];
+	};
+	case ({_obj isKindOf _x} count ["StorageBladder_01_fuel_forest_F", "StorageBladder_01_fuel_sand_F", "Land_fs_feed_F", "Land_FuelStation_01_pump_malevil_F", "Land_FuelStation_Feed_F", "Land_Pod_Heli_Transport_04_fuel_F"]>0):
+	{
+		{ _variables pushBack [_x select 0, _obj getVariable _x] } forEach [["GOMfnc_fuelCargo", 0]];
+	};
+	
+};
+//BASE - SAFE LOCKING End
+
+
 
 // Fix for -1.#IND
 if (isNil "_ammoCargo" || {!finite _ammoCargo}) then { _ammoCargo = 0 };

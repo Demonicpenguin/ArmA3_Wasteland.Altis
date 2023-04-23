@@ -6,9 +6,14 @@
 //	@file Author: [404] Deadbeat
 //	@file Created: 28/12/2013 19:42
 
+//Setup your UID Whitelist here 
+//Last Update by CREAMPIE on 01-06-2014
+
 client_firstSpawn = true;
 
-[] execVM "client\functions\welcomeMessage.sqf";
+//[] execVM "client\functions\welcomeMessage.sqf";
+[] execVM "addons\TOParmaInfo\loadTOParmaInfo.sqf";
+
 
 player addEventHandler ["Take",
 {
@@ -55,10 +60,11 @@ player addEventHandler ["Put",
 	};
 }];
 
-//player addEventHandler ["WeaponDisassembled", { _this spawn weaponDisassembledEvent }]; // now handled in fn_inGameUIActionEvent.sqf
+player addEventHandler ["WeaponDisassembled", { _this spawn weaponDisassembledEvent }];
 player addEventHandler ["WeaponAssembled",
 {
 	params ["_player", "_obj"];
+	_objClass = typeOf _obj;
 
 	clearBackpackCargoGlobal _obj;
 	clearMagazineCargoGlobal _obj;
@@ -67,47 +73,22 @@ player addEventHandler ["WeaponAssembled",
 
 	if (unitIsUAV _obj) then
 	{
-		// Don't disable UAV thermal vision here, do it at the bottom of fn_createCrewUAV.sqf
+		// ownerUID handled thru save funcs
 
 		_playerSide = side group _player;
 
-		if (side _obj != _playerSide && count crew _obj > 0) then
+		if (side _obj != _playerSide) then
 		{
 			(crew _obj) joinSilent createGroup _playerSide;
 		};
-
-		if (isNil {_obj getVariable "ownerUID"}) then
-		{
-			_obj setVariable ["A3W_skipAutoSave", true, true]; // SKIPSAVE on first assembly
-
-			_obj allowDamage true;
-			_obj setVariable ["allowDamage", true, true];
-
-			[_obj, true] call A3W_fnc_setVehicleLoadout;
-		};
-
-		_obj setVariable ["ownerUID", getPlayerUID _player, true];
-		_obj setVariable ["ownerName", name _player, true];
-		_obj setPlateNumber name _player;
-
-		[_obj, _playerSide, true] call fn_createCrewUAV;
 
 		if (!alive getConnectedUAV _player) then
 		{
 			_player connectTerminalToUAV _obj;
 		};
 
-		if !(_obj getVariable ["A3W_skipAutoSave", false]) then
-		{
-			if (_obj isKindOf "AllVehicles" && !(_obj isKindOf "StaticWeapon")) then
-			{
-				if (!isNil "fn_manualVehicleSave") then { _obj call fn_manualVehicleSave };
-			}
-			else
-			{
-				if (!isNil "fn_manualObjectSave") then { _obj call fn_manualObjectSave };
-			};
-		};
+		[_obj, _playerSide, true] call fn_createCrewUAV;
+		[_obj, _player, false] call A3W_fnc_takeOwnership;
 	};
 }];
 
@@ -237,3 +218,6 @@ if (playerSide in [BLUFOR,OPFOR] && {{_x select 0 == _uid} count pvar_teamSwitch
 
 	titleText [format ["You have been locked to %1", _side], "PLAIN", 0.5];
 };
+
+player setVariable ["HALO_last_time", time];
+//player setVariable ["inRadiationZone", false];

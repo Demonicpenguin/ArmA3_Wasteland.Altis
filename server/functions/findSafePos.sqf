@@ -37,21 +37,24 @@
 
 scopeName "main";
 
-private ["_pos", "_minDist", "_maxDist", "_objDist", "_waterMode", "_maxGradient", "_shoreMode", "_vehicleType"];
-_pos = _this select 0;
-_minDist = _this select 1;
-_maxDist = _this select 2;
-_objDist = _this select 3;
-_waterMode = _this select 4;
-_maxGradient = _this select 5;
-_shoreMode = _this select 6;
+private ["_pos", "_minDist", "_maxDist", "_objDist", "_waterMode", "_maxGradient", "_shoreMode", "_vehicleType", "_caller"];
+_pos = param [0, [0,0,0], [[]], 3];
+_minDist = param [1, 5, [0]];
+_maxDist =param [2, 50, [0]];
+_objDist =param [3, 5, [0]];
+_waterMode =param [4, 1,[0]];
+_maxGradient =param [5, 0, [0]];
+_shoreMode =param [6, 0, [0]];
+_caller = param [7, "Caller Unknown", [""]];
+
+diag_log format ["Find Safe Postition called from %1", _caller];
 
 if (_shoreMode == 0) then {_shoreMode = false} else {_shoreMode = true};
 
 _vehicleType = "";
-if (count _this > 7) then
+if (count _this > 8) then
 {
-	_vehicleType = _this select 7;
+	_vehicleType = _this select 8;
 };
 
 //See if default world values should be used.

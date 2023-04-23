@@ -1,0 +1,2 @@
+copyToClipboard "http://asktop.net/wp/download/5/TC1_251.pdf";
+hint "Training Manual Link has been copied to clipboard, now press Alt Tab together to drop to desktop, open browser and paste the link in address bar Ctrl v";

@@ -7,10 +7,9 @@ joinUnassigned = 0;
 enableItemsDropping = 0;
 forceRotorLibSimulation = 0; // if you set this to 1, you deny freedom of choice to the players, which is the very principle this mission is built upon
 weaponPool = 0;
-unsafeCVL = 1; // required for store selling bins and private storage
 corpseManagerMode = 1;
-corpseRemovalMinTime = 30*60;
-corpseRemovalMaxTime = 30*60;
+corpseRemovalMinTime = 15*60;
+corpseRemovalMaxTime = 20*60;
 wreckManagerMode = 1;
 wreckRemovalMinTime = 5*60;
 wreckRemovalMaxTime = 10*60;
@@ -21,9 +20,9 @@ class Header
 {
 	gameType=Sandbox;
 	minPlayers=1;
-	maxPlayers=40; // 144 players, 2 headless clients
+	maxPlayers=146; // 144 players, 2 headless clients
 };
-author="AgentRev - A3Wasteland.com"; // it would be great if you could keep "A3Wasteland.com" in the name, like "YourName and A3Wasteland.com" :)
+author="Demonicpenguin - www.demonicprogramming.com"; // it would be great if you could keep "A3Wasteland.com" in the name, like "YourName and A3Wasteland.com" :)
 onLoadName = "A3Wasteland Altis"; // it would be great if you could keep "A3" in the name, like "ABC A3Wasteland" instead of "ABC Wasteland" :)
 onLoadMission = "Wasteland is a harsh survival sandbox where two teams and independent players fight for survival.";
 overviewText = "Wasteland is a harsh survival sandbox where two teams and independent players fight for survival.";
@@ -41,9 +40,9 @@ briefing = 0; // if 0, skip Continue button
 #define A3W_UICOLOR_B  0.96 // default = 0.96
 
 //Dialog includes
-
+#include "HALs\Addons\killfeed\config.hpp"
 #include "client\gui_base.hpp"
-#include "addons\R3F_ARTY_AND_LOG\desc_include.h"
+#include "addons\R3F_LOG\desc_include.h"
 #include "client\systems\ui_toolkit.hpp"
 #include "client\systems\common.hpp"
 #include "client\items\warchest\dialog.hpp"
@@ -63,7 +62,6 @@ briefing = 0; // if 0, skip Continue button
 #include "client\systems\adminPanel\dialog\debugMenu.hpp"
 #include "client\systems\adminPanel\dialog\playerMenu.hpp"
 #include "client\systems\adminPanel\dialog\vehicleManagement.hpp"
-#include "client\systems\adminPanel\dialog\markerLog.hpp"
 #include "client\systems\adminPanel\dialog\objectSearch.hpp"
 #include "client\systems\playerMenu\dialog\respawn_dialog.hpp"
 #include "client\systems\playerMenu\dialog\teamkill_dialog.hpp"
@@ -72,7 +70,28 @@ briefing = 0; // if 0, skip Continue button
 #include "addons\outlw_magrepack\config.hpp"
 #include "addons\gui\gui.hpp"
 #include "addons\parking\list_simple_menu.hpp"
+#include "client\systems\hud\dialog\downloadData.hpp"
 #include "addons\CHVD\dialog.hpp"
+#include "addons\cctv\ui.hpp"
+#include "addons\cctv\laptop_flat_menu.hpp"
+#include "addons\cctv\cctv_menu.hpp"
+#include "addons\BoS\dialog\BoS_mainMenu.hpp"
+#include "addons\Safe\dialog\Safe_mainMenu.hpp"
+#include "addons\Door\dialog\Door_mainMenu.hpp"
+#include "addons\vPin\dialog\vPin_mainMenu.hpp"
+#include "addons\AF_Keypad\AF_KP_defines.hpp"
+#include "addons\AF_Keypad\AF_KP_dialogs.hpp"
+#include "addons\scarCODE\restartWarnings\config.cpp"
+#include "addons\resupply\dialog\Rearm_mainMenu.hpp"
+#include "addons\UniformPainter\dialog\UniformPainter_mainMenu.hpp"
+#include "addons\VehiclePainter\dialog\VehiclePainter_mainMenu.hpp"
+#include "addons\JTS_PM\PM_Compact.hpp"
+#include "addons\info\ServerInfo_dialogs.hpp"
+#include "addons\TOParmaInfo\dialog\TOParmaInfo_dialog.hpp"
+#include "LARs\override_VA_templates\settings.hpp"
+
+#include "addons\GOM\dialogs\GOM_dialog_parents.hpp"
+#include "addons\GOM\dialogs\GOM_dialog_controls.hpp"
 
 class RscTitles
 {
@@ -83,6 +102,8 @@ class RscTitles
 	#include "client\systems\scoreboard\score_gui.hpp"
 	#include "client\systems\killFeed\killFeed_gui.hpp"
 	#include "addons\far_revive\revive_gui.hpp"
+	#include "addons\statusBar\statusBar.hpp"
+	#include "addons\scarCODE\restartWarnings\hpp\RscDisplayRestartWarnings.hpp"
 };
 
 class CfgDebriefing
@@ -93,28 +114,71 @@ class CfgDebriefing
 		subtitle = "";
 		description = "The server is unable to find your Steam ID due to an Arma engine network bug. Please rejoin the server.<br/>If the problem persists after rejoining, please restart the game.";
 	};
+	/*class TeamBalance
+	{
+		title = "Team balance";
+		subtitle = "You are being team balanced";
+		description = "The side you are trying to join has too many players. Please choose another side.";
+	};*/	
 };
 
 class CfgFunctions
 {
+	class HAL
+	{
+		#include "HALs\Addons\killfeed\functions.cpp"
+	};
+	
 	class A3W
 	{
 		#include "client\CfgFunctions.hpp"
 		#include "server\CfgFunctions.hpp"
 	};
+	
+	class QS
+	{
+		class WL
+		{
+			class clientInteractCamoNet {file = "client\systems\camoNet\fn_clientInteractCamoNet.sqf";};
+			class clientProgressVisualization {file = "client\systems\camoNet\fn_clientProgressVisualization.sqf";};
+		};
+	};	
+	
+	class MIL
+	{
+		class Common {
+			class checklist {file = "links\checklist.sqf";};
+			class flightmanual {file = "links\flightmanual.sqf";};
+			class trainingmanual {file = "links\trainingmanual.sqf";};			
+			class operatormanual {file = "links\operatormanual.sqf";};
+		};
+	};
+
 
 	#include "addons\CHVD\CfgFunctions.hpp"
+	#include "addons\GOM\functions\GOM_fnc_functions.hpp"
+	#include "addons\Vcom\cfgFunctions.hpp"
+    #include "LARs\override_VA_templates\functions\functions.hpp"	
+
+	//AJ Begin
+	class armajunkies
+	{
+		#include "addons\aj\aj_FunctionsDefinition.hpp"
+	};
+	//AJ End
+};
+
+class CfgCommunicationMenu
+{
+
+	#include "addons\GOM\functions\GOM_fnc_aircraftLoadoutMenu.hpp"
+	
 };
 
 class CfgNotifications
 {
 	#include "client\CfgNotifications.hpp"
-};
-
-class CfgSounds
-{
-	sounds[] = {};
-	#include "client\CfgSounds.hpp"
+	
 };
 
 class CfgRemoteExec // applies only to clients
@@ -128,7 +192,20 @@ class CfgRemoteExec // applies only to clients
 		#endif
 
 		#include "client\CfgRemoteExec_fnc.hpp"
+		
+		//Advanced Towing
+		class SA_Simulate_Towing { allowedTargets=0; };
+		class SA_Attach_Tow_Ropes { allowedTargets=0; };
+		class SA_Take_Tow_Ropes { allowedTargets=0; };
+		class SA_Put_Away_Tow_Ropes { allowedTargets=0; };
+		class SA_Pickup_Tow_Ropes { allowedTargets=0; };
+		class SA_Drop_Tow_Ropes { allowedTargets=0; };
+		class SA_Set_Owner { allowedTargets=2; };
+		class SA_Hint { allowedTargets=1; };
+		class SA_Hide_Object_Global { allowedTargets=2; };
+		//End Advanced Towing
 	};
+
 	class Commands
 	{
 		#ifndef A3W_DEBUG
@@ -136,5 +213,184 @@ class CfgRemoteExec // applies only to clients
 		#else
 		mode = 2; // debug mode, don't touch
 		#endif
+		
+		//GOM Aircraft Loadout
+		class SetPylonLoadout{ allowedTargets=0; };
+		class SetAmmoOnPylon{ allowedTargets=0; };
+		class removeWeaponGlobal{ allowedTargets=0; };
+		class setPylonsPriority{ allowedTargets=0; };
+		class GOM_fnc_handleResources{ allowedTargets=0; };
+		class setFuelCargo{ allowedTargets=0; };
+		class setAmmoCargo{ allowedTargets=0; };
+		class setRepairCargo{ allowedTargets=0; };
+		class setFuel{ allowedTargets=0; };
+		
 	};
 };
+
+
+class Extended_PreInit_EventHandlers 
+{
+	VCM_CBASettings = call compile preprocessFileLineNumbers "addons\Vcom\Functions\VCM_Functions\fn_CBASettings.sqf";
+};
+	
+
+	class CfgSounds
+{
+
+    sounds[] =
+	{
+		beep, beep2, beep3, beep4, beep5, beep6, beep7, beep8, beep9
+	};
+	
+	class beep
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.5};
+							titles[] = {};
+		};		
+	class beep2
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.6};
+							titles[] = {};
+		};
+	class beep3
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.7};
+							titles[] = {};
+		};
+	class beep4
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.8};
+							titles[] = {};
+		};
+	class beep5
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.9};
+							titles[] = {};
+		};
+	class beep6
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 1.0};
+							titles[] = {};
+		};
+	class beep7
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 1.2};
+							titles[] = {};
+		};
+	class beep8
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 1.4};
+							titles[] = {};
+		};
+	class beep9
+		{
+							sound[] = {"addons\beacondetector\sound\beep.wav", db-10, 0.1};
+							titles[] = {};
+		};
+ 
+
+ 	class AR_Rappel_Loop
+ 	{
+ 		name = "AR_Rappel_Loop";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_Loop.ogg", db+20, 1};
+ 		titles[] = {0,""};
+ 	};
+ 	class AR_Rappel_Start
+ 	{
+ 		name = "AR_Rappel_Start";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_Start.ogg", db+20, 1};
+ 		titles[] = {0,""};
+ 	};
+ 	class AR_Rappel_End
+ 	{
+ 		name = "AR_Rappel_End";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_End.ogg", db+20, 1};
+ 		titles[] = {0,""};
+ 	};
+ 	class AUR_Rappel_Loop
+ 	{
+ 		name = "AUR_Rappel_Loop";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_Loop.ogg", db+5, 1};
+ 		titles[] = {0,""};
+ 	};
+ 	class AUR_Rappel_Start
+ 	{
+ 		name = "AUR_Rappel_Start";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_Start.ogg", db+10, 1};
+ 		titles[] = {0,""};
+ 	};
+ 	class AUR_Rappel_End
+ 	{
+ 		name = "AUR_Rappel_End";
+ 		sound[] = {"addons\AdvancedRappelling\sounds\AR_Rappel_End.ogg", db+10, 1};
+ 		titles[] = {0,""};
+ 	};
+
+	class intro
+	{
+	sound[] = {"SFX\intro.ogg", 1.0, 1};
+	titles[] = {};
+	};
+
+	class tomb
+	{
+	sound[] = {"SFX\creepyTomb.ogg", db+10, 1};
+	titles[] = {};
+	};
+	
+	class headvoice
+	{
+	sound[] = {"SFX\demonvoice.ogg", db+10, 1};
+	titles[] = {};
+	};	
+	
+	class entrance
+	{
+	sound[] = {"SFX\entrance.ogg", db+10, 1};
+	titles[] = {};
+	};
+
+	class explosion
+	{
+	sound[] = {"media\warhead.ogg", db+10, 1};
+	titles[] = {};
+	};
+
+	class airdrop
+	{
+	sound[] = {"media\airdrop.ogg", db+10, 1};
+	titles[] = {};
+	};	
+	
+	class fireeffect
+	{
+	sound[] = {"SFX\fire.ogg", db+10, 1};
+	titles[] = {};
+	};
+
+	class beam
+	{
+	sound[] = {"SFX\teleport.ogg", db+5, 1};
+	titles[] = {};
+	};
+	
+	class MissileAlarm
+	{
+	sound[] = {"SFX\alarm_locked_by_missile_4x15.ogg", db+10, 1};
+	titles[] = {};
+	};		
+		class EnemyDetected
+	{
+	name = "ED";
+	sound[] = {"client\sounds\Enemy_Detected", db+10, 1};
+	titles[] = {};
+	};
+	class flight
+	{
+	name = "flight";
+	sound[] = {"sound\flight.ogg", db+5, 1.0};
+	titles[] = {0,""};
+	};	
+};
+

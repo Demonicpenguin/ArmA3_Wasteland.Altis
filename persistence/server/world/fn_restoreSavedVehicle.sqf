@@ -9,7 +9,9 @@
 _pos = _pos apply { if (_x isEqualType "") then { parseNumber _x } else { _x } };
 
 private _isUAV = (round getNumber (configFile >> "CfgVehicles" >> _class >> "isUav") > 0);
-private _flying = (!isNil "_flying" && {_flying > 0});
+
+private ([["_flying"],[]] select isNil "_flying");
+_flying = (!isNil "_flying" && {_flying > 0});
 
 private _special = ["NONE","FLY"] select (_isUAV && _flying);
 private _tempPos = +_pos;
@@ -23,6 +25,52 @@ _veh = createVehicle [_class, _tempPos, [], if (isNil "_safeDistance") then { 0 
 _veh allowDamage false;
 _veh hideObjectGlobal true;
 
+//Make sure Blackwasp wings are folded
+if (_veh iskindof "Plane_Fighter_01_Base_F") then 
+{ 
+	_veh animate ['wing_fold_l',1];	
+	_veh animate ['wing_fold_r',1];	
+	_veh animate ['wing_fold_cover_l',1];	
+	_veh animate ['wing_fold_cover_r',1]; 
+}; 
+//Make sure Sentinal wings are folded
+if (_veh iskindof "B_UAV_05_F") then
+{
+	_veh animate ["wing_fold_l_arm",1];
+	_veh animate ["wing_fold_l",1];
+	_veh animate ["wing_fold_cover_l_arm",1];
+	_veh animate ["wing_fold_cover_l",1];
+	_veh animate ["wing_fold_r_arm",1];
+	_veh animate ["wing_fold_r",1];
+	_veh animate ["wing_fold_cover_r_arm",1];
+	_veh animate ["wing_fold_cover_r",1];
+};
+
+//Reload Service system
+if ({_veh iskindof _x} count
+	[
+		"C_Offroad_01_repair_F",
+		"C_Van_02_service_F",
+		"C_Van_01_fuel_F",
+		"B_G_Van_01_fuel_F",
+		"B_Truck_01_fuel_F",
+		"B_Truck_01_Repair_F",
+		"B_Truck_01_ammo_F",
+		"O_Truck_03_fuel_F",
+		"O_Truck_03_repair_F",
+		"O_Truck_03_ammo_F",
+		"I_Truck_02_fuel_F",
+		"I_Truck_02_ammo_F",
+		"I_Truck_02_box_F",	
+		"B_APC_Tracked_01_CRV_F",
+		"O_Heli_Transport_04_ammo_F",
+		"O_Heli_Transport_04_repair_F",
+		"O_Heli_Transport_04_fuel_F"
+	] >0)
+then
+{
+	_veh spawn GOM_fnc_addAircraftLoadoutToObject;
+};
 private _velMag = vectorMagnitude velocity _veh;
 
 if (isNil "_safeDistance") then
@@ -57,7 +105,6 @@ private _uavAuto = true;
 		case "ownerName":
 		{
 			if (_val isEqualType []) then { _val = toString _val };
-			if !(_val in ["", "Error: No unit", "Error: No vehicle"]) then { _veh setPlateNumber _val };
 		};
 		case "uavSide":
 		{
@@ -88,7 +135,7 @@ if (_isUAV) then
 		};
 
 		_veh setVelocity _vel;
-		_veh flyInHeight ((_veh modelToWorld [0,0,0]) select 2);
+		_veh flyInHeight (((_veh call fn_getPos3D) select 2) max 500);
 	};
 
 	//assign AI to the vehicle so it can actually be used
@@ -132,12 +179,14 @@ if (!isNil "_textures") then
 
 	if (_textures isEqualType "") then { _textures = [_textures] }; // assume TextureSource
 	if (_textures isEqualTypeArray [""]) then // TextureSource
+
 	{
 		[_veh, _textures] call applyVehicleTexture;
 	}
 	else // texture paths
 	{
 		private _objTextures = [];
+
 
 		{
 			_texture = _x select 0;
@@ -150,7 +199,8 @@ if (!isNil "_textures") then
 
 			{
 				_veh setObjectTextureGlobal [_x, _texture];
-				_objTextures set [_x, _texture];
+				_objTextures set [_x, _texture];				
+				//[_objTextures, _x, _texture] call fn_setToPairs;
 			} forEach (_x select 1);
 		} forEach _textures;
 
@@ -175,6 +225,11 @@ if (!isNil "_owner") then
 	};
 };
 
+//AJ - Possible Fix for AJWL-122 - if no missonvehicle or purchased vehicle variable is set on the restored vehicle - set it now.
+if  !(_veh getVariable ["A3W_purchasedVehicle", false] || _veh getVariable ["A3W_missionVehicle", false]) then
+{
+	_veh setVariable ["A3W_purchasedVehicle", true, true];
+};
 clearWeaponCargoGlobal _veh;
 clearMagazineCargoGlobal _veh;
 clearItemCargoGlobal _veh;
@@ -197,7 +252,7 @@ if (!isNil "_backpacks") then
 	{
 		_x params ["_bpack"];
 
-		if (!(_bpack isKindOf "Weapon_Bag_Base") || {[["_UAV_","_UGV_","_Designator_"], _bpack] call fn_findString != -1}) then
+		if (!(_bpack isKindOf "Weapon_Bag_Base") || {[["_UAV_","_Designator_"], _bpack] call fn_findString != -1}) then
 		{
 			_veh addBackpackCargoGlobal _x;
 		};
@@ -270,6 +325,48 @@ if (!isNil "_turretMags2") then
 if (!isNil "_ammoCargo") then { _veh setAmmoCargo _ammoCargo };
 if (!isNil "_fuelCargo") then { _veh setFuelCargo _fuelCargo };
 if (!isNil "_repairCargo") then { _veh setRepairCargo _repairCargo };
+//Restore Vehicle Camo nets
+if (_veh getvariable ["CamoDeployed", false]) then
+{
+	if ({_veh isKindOf _x} count 
+	[
+		"B_APC_Tracked_01_CRV_F",
+		"B_APC_Tracked_01_rcws_F",
+		"O_APC_Tracked_02_cannon_F",
+		"O_APC_Wheeled_02_rcws_v2_F",
+		"I_APC_Wheeled_03_cannon_F",
+		"I_LT_01_AA_F",
+		"I_LT_01_AT_F",
+		"I_LT_01_scout_F",
+		"I_LT_01_cannon_F"
+	]>0) then 
+	{
+		_veh animate ["showCamonetHull",1];
+	};
+	if ({_veh isKindOf _x} count 
+	[
+		"B_APC_Tracked_01_AA_F",
+		"B_APC_Wheeled_01_cannon_F",
+		"B_AFV_Wheeled_01_cannon_F",
+		"B_AFV_Wheeled_01_up_cannon_F",
+		"B_MBT_01_arty_F",
+		"B_MBT_01_mlrs_F",
+		"B_MBT_01_cannon_F",
+		"B_MBT_01_TUSK_F",
+		"O_APC_Tracked_02_AA_F",
+		"O_MBT_02_arty_F",
+		"O_MBT_02_cannon_F",
+		"O_MBT_04_cannon_F",
+		"O_MBT_04_command_F",
+		"I_APC_tracked_03_cannon_F",
+		"I_MBT_03_cannon_F"
+	]>0) then
+	{
+		_veh animate ["showCamonetHull",1];
+		_veh animate ["showCamonetTurret",1];
+	};
+};
+
 
 reload _veh;
 _veh hideObjectGlobal false;

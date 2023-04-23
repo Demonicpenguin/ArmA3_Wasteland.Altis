@@ -4,12 +4,13 @@
 //	@file Name: drawPlayerMarkers.sqf
 //	@file Author: AgentRev
 
+#include "..\..\STConstants.h"
 if (!hasInterface) exitWith {};
 
 #define IS_FRIENDLY_VEHICLE(VEH) ([VEH, player] call A3W_fnc_isFriendly)
 #define IS_FRIENDLY_PLAYER(UNIT) (isPlayer UNIT && IS_FRIENDLY_VEHICLE(UNIT))
 #define DEFAULT_ICON_POS(UNIT) (UNIT modelToWorld (UNIT selectionPosition "spine3"))
-#define MISSION_AI_FAR_DISTANCE 75
+#define MISSION_AI_FAR_DISTANCE 1001
 
 disableSerialization;
 
@@ -40,10 +41,7 @@ A3W_mapDraw_eventCode =
 			_drawArr set [2, _unit call _posCode];
 		};
 
-		if (!isNil {_drawArr select 2}) then
-		{
-			_mapCtrl drawIcon _drawArr;
-		};
+		_mapCtrl drawIcon _drawArr;
 	} forEach A3W_mapDraw_arrIcons;
 
 	{ _mapCtrl drawLine _x } forEach A3W_mapDraw_arrLines;
@@ -85,6 +83,29 @@ A3W_mapDraw_thread = [] spawn
 			};
 		};
 
+		_ships = [
+			missionNamespace getVariable [ST_CARRIER, objNull],
+			missionNamespace getVariable [ST_DESTROYER, objNull],
+			missionNamespace getVariable [ST_SUBMARINE, objNull]];
+
+		{
+
+			if( !isNull _x ) then {
+
+				_icon = switch (typeOf _x) do {
+					case(ST_CARRIER): { (call currMissionDir) + "media\carrier.paa"; };
+					case(ST_DESTROYER): { (call currMissionDir) + "media\destroyer.paa"; };
+					case(ST_SUBMARINE): { (call currMissionDir) + "media\submarine.paa"; };
+				};
+
+				//TODO: Color
+
+				_name = getText (configFile >> "CfgVehicles" >> typeOf _x >> "displayName");
+				_newArrayIcons pushBack [[_icon, [0,0,0,.85], (getPosASL _x), 48, 12, 0, _name, 0, 0.05, "PuristaMedium"], objNull];
+
+			};
+
+		} forEach _ships;
 		if (_showPlayers) then
 		{
 			_mapIconsEnabled = (difficultyOption "mapContent" > 0);
@@ -109,9 +130,11 @@ A3W_mapDraw_thread = [] spawn
 					_color = if (group _uavOwner == group player) then { [0,1,0,1] } else { [1,1,1,1] };
 					//_pos = if (_mapIconsEnabled) then { DEFAULT_ICON_POS(_uav) } else { getPosASLVisual _uav };
 
-					_newArrayIcons pushBack [[_icon, _color, nil, 24, 24, getDirVisual _uav, "", 1], _uav, A3W_mapDraw_iconPosUAV]; // draw icon
+					if (group _uavOwner == group player) then {
+						_newArrayIcons pushBack [[_icon, _color, nil, 24, 24, getDirVisual _uav, "", 1], _uav, A3W_mapDraw_iconPosUAV]; // draw icon
+					};
 
-					if (showPlayerNames) then
+					if (showPlayerNames && group _uavOwner == group player ) then
 					{
 						_text = format [" [AI%1]", if (isPlayer _uavOwner) then { " - " + name _uavOwner } else { "" }];
 						_newArrayIcons pushBack [["#(argb,1,1,1)color(0,0,0,0)", _color, nil, 25, 25, 0, _text, 2, 0.05, "PuristaMedium"], _uav, A3W_mapDraw_iconPosUAV]; // draw text
@@ -143,7 +166,7 @@ A3W_mapDraw_thread = [] spawn
 				if (alive _x && IS_FRIENDLY_PLAYER(_x) && !(_x getVariable ["playerSpawning", false])) then
 				{
 					_veh = vehicle _x;
-					_driver = (crew _veh) param [0, objNull];
+					_driver = (crew _veh) select 0;
 
 					if (_driver == _x || {isAgent teamMember _driver && effectiveCommander _veh == _x}) then
 					{

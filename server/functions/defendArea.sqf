@@ -58,6 +58,18 @@ _staticWeapons = [];
 	};
 } forEach _staticWeapons;
 
+// Have the group man empty static defenses and vehicle turrets
+{
+	// Are there still units available?
+	if (count _units > 0) then
+	{
+		_unit = _units call BIS_fnc_selectRandom;
+		_unit assignAsDriver _x;
+		_unit moveInDriver _x;
+		_units = _units - [_unit];
+	};
+} forEach _staticWeapons;
+
 // Waypoints
 private ["_wp1", "_wp2"];
 

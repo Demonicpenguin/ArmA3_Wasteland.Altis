@@ -21,6 +21,14 @@ switch (true) do
 	{
 		_obj setVariable ["water", 50, true];
 	};
+	case ( _objClass == "Land_RepairDepot_01_green_F"):
+	{
+		_obj setVariable ["kits", 100, true];
+	};
+	case ( _objClass == "CargoNet_01_barrels_F"):
+	{
+		_obj setVariable ["jerrycanfull", 50, true];
+	};												   
 	case (_objClass == "Land_Sacks_goods_F"):
 	{
 		_obj setVariable ["food", 40, true];
@@ -50,6 +58,7 @@ switch (true) do
 
 _obj allowDamage _allowDamage;
 _obj setVariable ["allowDamage", _allowDamage, true];
+_obj setVariable ["moveable", true, true];
 
 // fix for sunken/rissen objects :)
 _adjustZ = switch (true) do

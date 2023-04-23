@@ -48,16 +48,13 @@ while {true} do
 
 		[_uav, true] call getInVehicle;
 
-		if !(_uav getVariable ["A3W_skipAutoSave", false]) then
+		if (_uav isKindOf "AllVehicles" && !(_uav isKindOf "StaticWeapon")) then
 		{
-			if (_uav isKindOf "AllVehicles" && !(_uav isKindOf "StaticWeapon")) then
-			{
-				if (!isNil "fn_forceSaveVehicle") then { _uav call fn_forceSaveVehicle };
-			}
-			else
-			{
-				if (!isNil "fn_forceSaveObject") then { _uav call fn_forceSaveObject };
-			};
+			if (!isNil "fn_forceSaveVehicle") then { _uav call fn_forceSaveVehicle };
+		}
+		else
+		{
+			if (!isNil "fn_forceSaveObject") then { _uav call fn_forceSaveObject };
 		};
 
 		// medical UAV setup

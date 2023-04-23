@@ -16,3 +16,7 @@ a3w_actions = [];
 a3w_actions_start = compile("start.sqf");
 a3w_actions_notify = compile("notify.sqf");
 a3w_actions_mutex = false;
+
+a3w_mergeCrates = compile("mergeCrates.sqf");
+a3w_recycle = compile("recycleObject.sqf");
+STRevealMissions = compile("reveal.sqf");										 

@@ -37,57 +37,49 @@ if (_uid call isAdmin) then
 					closeDialog 0;
 					execVM "client\systems\adminPanel\vehicleManagement.sqf";
 				};
-				case 2: //Markers log
-				{
-					closeDialog 0;
-					createDialog "MarkerLog";
-				};
-				case 3: //Tags
+				case 2: //Tags
 				{
 					execVM "client\systems\adminPanel\playerTags.sqf";
 				};
-				case 4: //Teleport
+				case 3: //Teleport
 				{
 					closeDialog 0;
 					["A3W_teleport", "onMapSingleClick",
 					{
-						private "_waterPos";
-						if (surfaceIsWater _pos) then
-						{
-							_top = +_pos;
-							_top set [2, (_top select 2) + 1000];
-							_buildings = (lineIntersectsSurfaces [_top, _pos, objNull, objNull, true, -1, "GEOM", "NONE"]) select {(_x select 2) isKindOf "Building"};
-
-							if !(_buildings isEqualTo []) then
-							{
-								_waterPos = _buildings select 0 select 0;
-							};
-						};
-						if (isNil "_waterPos") then { vehicle player setPos _pos } else { vehicle player setPosASL _waterPos };
+						vehicle player setPos _pos;
 						if (!isNil "notifyAdminMenu") then { ["teleport", _pos] spawn notifyAdminMenu };
 						["A3W_teleport", "onMapSingleClick"] call BIS_fnc_removeStackedEventHandler;
 						true
 					}] call BIS_fnc_addStackedEventHandler;
 					hint "Click on map to teleport";
 				};
-				case 5: //Money
+				case 4: //Teleport player to me
 				{
-					_money = 50000;
-					//player setVariable ["cmoney", (player getVariable ["cmoney",0]) + _money, true];
-					[player, _money] call A3W_fnc_setCMoney;
+					closeDialog 0;
+					execVM "client\systems\adminPanel\tptome.sqf";
+				};
+				case 5: //Teleport me to player
+				{
+					closeDialog 0;
+					execVM "client\systems\adminPanel\tpmeto.sqf";
+				};
+				case 6: //Money
+				{
+					_money = 500000;
+					player setVariable ["cmoney", (player getVariable ["cmoney",0]) + _money, true];
 					if (!isNil "notifyAdminMenu") then { ["money", _money] call notifyAdminMenu };
 				};
-				case 6: //Debug Menu
+				case 7: //Debug Menu
 				{
 					closeDialog 0;
 					execVM "client\systems\adminPanel\loadDebugMenu.sqf";
 				};
-				case 7: //Object search menu
+				case 8: //Object search menu
 				{
 					closeDialog 0;
 					execVM "client\systems\adminPanel\loadObjectSearch.sqf";
 				};
-				case 8: // toggle God mode
+				case 9: // toggle God mode
 				{
 					execVM "client\systems\adminPanel\toggleGodMode.sqf";
 				};

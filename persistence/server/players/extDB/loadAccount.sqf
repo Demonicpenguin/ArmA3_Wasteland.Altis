@@ -130,12 +130,13 @@ else
 private _bank = 0;
 private _bounty = 0;
 private _bountyKills = [];
+private _uniformNumber = 0; 
 
 _result = [["getPlayerStatusXMap", _UID, _environment], 2] call extDB_Database_async;
 
 if (_moneySaving) then
 {
-	_bank = _result param [0,500000];
+	_bank = _result param [0,0];
 };
 
 if (["A3W_atmBounties"] call isConfigOn) then
@@ -144,11 +145,23 @@ if (["A3W_atmBounties"] call isConfigOn) then
 	_bountyKills = _result param [2,[]];
 };
 
+if (["A3W_customUniformEnabled"] call isConfigOn) then
+{
+	_result = ["getPlayerCustomUniform:" + _UID, 2] call extDB_Database_async;
+
+	if (count _result > 0) then
+	{
+		_uniformNumber = _result select 0;
+	};
+};
+
+
 _data append
 [
 	["BankMoney", _bank],
 	["Bounty", _bounty],
-	["BountyKills", _bountyKills]
+	["BountyKills", _bountyKills],
+	["CustomUniform", _uniformNumber]
 ];
 
 if (["A3W_privateParking"] call isConfigOn) then

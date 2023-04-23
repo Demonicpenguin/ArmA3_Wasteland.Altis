@@ -69,6 +69,7 @@ _startTime = diag_tickTime;
 		_minrad = 0;
 		_maxrad = _tradius / 2;
 		_lcounter = 0;
+		//_vehammount = 2; // added to reduce the number of vehicles on map - can be removed to allow file to run as normal
 
 		while {_lcounter < _vehammount} do
 		{

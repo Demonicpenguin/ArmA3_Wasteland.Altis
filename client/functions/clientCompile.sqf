@@ -31,6 +31,10 @@ canPushPlaneBack = "client\functions\canPushPlaneBack.sqf" call mf_compile;
 canPushVehicleOnFoot = "client\functions\canPushVehicleOnFoot.sqf" call mf_compile;
 canPushWatercraft = "client\functions\canPushWatercraft.sqf" call mf_compile;
 findHackedVehicles = "client\systems\adminPanel\findHackedVehicles.sqf" call mf_compile;
+fnc_safe_vehicle_exit = "addons\aj\antiglitch\fn_aj_c_safe_vehicle_exit.sqf" call mf_compile;
+
+fn_hideObject = "client\functions\fn_hideObject.sqf" call mf_compile;
+
 fn_addManagedAction = "client\functions\fn_addManagedAction.sqf" call mf_compile;
 fn_canTakeOwnership = "client\actions\canTakeOwnership.sqf" call mf_compile;
 fn_ctrlOverlapCheck = "client\functions\fn_ctrlOverlapCheck.sqf" call mf_compile;
@@ -52,6 +56,7 @@ getDefaultClothing = "client\functions\getDefaultClothing.sqf" call mf_compile;
 getFullMove = "client\functions\getFullMove.sqf" call mf_compile;
 getMoveParams = "client\functions\getMoveParams.sqf" call mf_compile;
 getPushPlaneAction = "client\functions\getPushPlaneAction.sqf" call mf_compile;
+deleteBeacon = "client\items\beacon\deleteBeacon.sqf" call mf_compile;
 groupNotify = "client\functions\groupNotify.sqf" call mf_compile;
 isAdmin = "client\systems\adminPanel\isAdmin.sqf" call mf_compile;
 isAssignableBinocular = "client\functions\isAssignableBinocular.sqf" call mf_compile;
@@ -65,6 +70,10 @@ updateTerritoryMarkers = "territory\client\updateTerritoryMarkers.sqf" call mf_c
 vehicleSideCfg = "client\functions\vehicleSideCfg.sqf" call mf_compile;
 weaponDisassembledEvent = "client\functions\weaponDisassembledEvent.sqf" call mf_compile;
 
+vaforall = "addons\scripts\vaforall.sqf" call mf_compile;		//Virtual Arsenal for All
+
+
+
 // Player details and actions
 loadPlayerMenu = "client\systems\playerMenu\init.sqf" call mf_compile;
 playerSpawn = "client\functions\playerSpawn.sqf" call mf_compile;
@@ -74,11 +83,16 @@ playerSetupGear = "client\functions\playerSetupGear.sqf" call mf_compile;
 playerSetupEnd = "client\functions\playerSetupEnd.sqf" call mf_compile;
 spawnAction = "client\functions\spawnAction.sqf" call mf_compile;
 spawnInTown = "client\functions\spawnInTown.sqf" call mf_compile;
+classes = "addons\classes\classes.sqf" call mf_compile;
 spawnOnBeacon = "client\functions\spawnOnBeacon.sqf" call mf_compile;
 spawnRandom = "client\functions\spawnRandom.sqf" call mf_compile;
 // placeSpawnBeacon = "client\systems\playerMenu\placeSpawnBeacon.sqf" call mf_compile;
 // refuelVehicle = "client\systems\playerMenu\refuel.sqf" call mf_compile;
 // repairVehicle = "client\systems\playerMenu\repair.sqf" call mf_compile;
+//fnc_markBaselockers = "addons\aj\fnc_aj_c_markBaselockers.sqf" call mf_compile;
+
+
+fn_checkBaseLock = "addons\aj\antiglitch\fn_aj_c_checkbaselock.sqf" call mf_compile;		//check for other base lockers within radius 
 
 // Sync client with server time
 timeSync = "client\functions\clientTimeSync.sqf" call mf_compile;
@@ -91,6 +105,7 @@ teamkillAction = "client\functions\doTeamKillAction.sqf" call mf_compile;
 teamkillMessage = "client\functions\showTeamKillMessage.sqf" call mf_compile;
 
 // Dialog compiles
+loadTOParmaInfo = "addons\TOParmaInfo\loadTOParmaInfo.sqf" call mf_compile;
 client_respawnDialog = "client\systems\playerMenu\dialog\loadRespawnDialog.sqf" call mf_compile;
 fn_checkStoreItemDLC = "client\functions\fn_checkStoreItemDLC.sqf" call mf_compile;
 fn_respawnTimer = "client\systems\scoreboard\fn_respawnTimer.sqf" call mf_compile;
@@ -98,6 +113,7 @@ loadGeneralStore = "client\systems\generalStore\loadGenStore.sqf" call mf_compil
 loadGunStore = "client\systems\gunStore\loadGunStore.sqf" call mf_compile;
 loadScoreboard = "client\systems\scoreboard\loadScoreboard.sqf" call mf_compile;
 loadVehicleStore = "client\systems\vehicleStore\loadVehicleStore.sqf" call mf_compile;
+
 gearProperties = "client\functions\gearProperties.sqf" call mf_compile;
 getCapacity = "client\functions\getCapacity.sqf" call mf_compile;
 getItemInfo = "client\functions\getItemInfo.sqf" call mf_compile;
@@ -106,10 +122,14 @@ getSellPriceList = "client\systems\selling\getSellPriceList.sqf" call mf_compile
 populateGeneralStore = "client\systems\generalStore\populateGenStore.sqf" call mf_compile;
 populateGunStore = "client\systems\gunStore\populateGunStore.sqf" call mf_compile;
 populateVehicleStore = "client\systems\vehicleStore\populateVehicleStore.sqf" call mf_compile;
+
 repaintVehicle = "client\systems\vehicleStore\repaintVehicle.sqf" call mf_compile;
 requestStoreObject = "client\functions\requestStoreObject.sqf" call mf_compile;
 vehicleInfo = "client\systems\vehicleStore\vehicleInfo.sqf" call mf_compile;
+itemInfo = "client\systems\generalStore\itemInfo.sqf" call mf_compile;
 weaponInfo = "client\systems\gunStore\weaponInfo.sqf" call mf_compile;
+carpetBomb = "addons\carpetBomb\GOM_fnc_carpetBombing.sqf" call mf_compile;
+
 
 if (isNil "A3W_fnc_MP") then { A3W_fnc_MP = compile preprocessFileLineNumbers "\A3\functions_f\MP\fn_MP.sqf" };
 if (isNil "A3W_fnc_MPexec") then { A3W_fnc_MPexec = compile preprocessFileLineNumbers "\A3\functions_f\MP\fn_MPexec.sqf" };

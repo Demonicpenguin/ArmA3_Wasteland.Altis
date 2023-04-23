@@ -38,22 +38,27 @@ if (hasInterface) then
 		case (["GenStore", _npcName] call _startsWith):
 		{
 			_npc addAction ["<img image='client\icons\store.paa'/> Open General Store", "client\systems\generalStore\loadGenStore.sqf", [], 1, true, true, "", STORE_ACTION_CONDITION];
+			_npc addAction ["<img image='addons\buySaveLoadOut\saveLoadOut.paa'/> Save Load Out</t>", "addons\buySaveLoadOut\buySaveLoadOut.sqf","SAVE", 1, false, true, "", STORE_ACTION_CONDITION];
+			_npc addAction ["<img image='addons\buySaveLoadOut\buyLoadOut.paa'/> Buy Load Out</t>", "addons\buySaveLoadOut\buySaveLoadOut.sqf","BUY", 1, false, true, "", STORE_ACTION_CONDITION  + " && (player getVariable ['currentLoadOut',false])"];
 		};
 		case (["GunStore", _npcName] call _startsWith):
 		{
 			_npc addAction ["<img image='client\icons\store.paa'/> Open Gun Store", "client\systems\gunStore\loadgunStore.sqf", [], 1, true, true, "", STORE_ACTION_CONDITION];
+			_npc addAction ["<img image='addons\buySaveLoadOut\saveLoadOut.paa'/> Save Load Out</t>", "addons\buySaveLoadOut\buySaveLoadOut.sqf","SAVE", 1, false, true, "", STORE_ACTION_CONDITION];
+			_npc addAction ["<img image='addons\buySaveLoadOut\buyLoadOut.paa'/> Buy Load Out</t>", "addons\buySaveLoadOut\buySaveLoadOut.sqf","BUY", 1, false, true, "", STORE_ACTION_CONDITION  + " && (player getVariable ['currentLoadOut',false])"];
 		};
 		case (["VehStore", _npcName] call _startsWith):
 		{
 			_npc addAction ["<img image='client\icons\store.paa'/> Open Vehicle Store", "client\systems\vehicleStore\loadVehicleStore.sqf", [], 1, true, true, "", STORE_ACTION_CONDITION];
-		};
+		};	
 	};
 
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell crate", "client\systems\selling\sellCrateItems.sqf", [false, false, true], 0.99, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_CRATE_CONDITION];
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell contents", "client\systems\selling\sellCrateItems.sqf", [], 0.98, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_CONTENTS_CONDITION];
+	_npc addAction ["<img image='client\icons\repair.paa'/> Service Vehicle", "client\systems\selling\serviceVehicle.sqf", [], 0.97, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell last vehicle contents", "client\systems\selling\sellVehicleItems.sqf", [], 0.97, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
 	_npc addAction ["<img image='client\icons\money.paa'/> Sell last vehicle", "client\systems\selling\sellVehicle.sqf", [], 0.96, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
-	_npc addAction ["<img image='client\icons\repair.paa'/> Paint vehicle", { createDialog "A3W_vehPaintMenu" }, [], 0.999, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
+	_npc addAction ["<img image='client\icons\repair.paa'/> Paint vehicle", { createDialog "A3W_vehPaintMenu" }, [], 0.95, false, true, "", STORE_ACTION_CONDITION + " && " + SELL_VEH_CONTENTS_CONDITION];
 };
 
 if (isServer) then

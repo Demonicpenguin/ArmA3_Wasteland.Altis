@@ -14,12 +14,12 @@ ps_markers_properties = ["ICON", "mil_dot", "ColorUNKNOWN", [1,1], "Storage"];
 
 //Arma 3 Storage container class (see list below)
 /*
-	"Supply100" (maximumLoad = 100)
-	"Supply200"
-	"Supply300"
-	"Supply400"
-	"Supply500"
-	"ReammoBox_F" (maximumLoad = 2000)
-	"ContainerSupply" (maximumLoad = 9999)
+	"Supply1000" (maximumLoad = 1000)
+	"Supply2000"
+	"Supply3000"
+	"Supply4000"
+	"Supply5000"
+	"ReammoBox_F" (maximumLoad = 20000)
+	"ContainerSupply" (maximumLoad = 99999)
  */
 ps_container_class = "ReammoBox_F";

@@ -32,6 +32,17 @@ mf_remote_syphon = {
 	_vehicle setFuel (_fuel max 0);
 } call mf_compile;
 
+mf_remote_extinguish = {
+	private "_vehicle";
+
+	_vehicle = objectFromNetId (_this select 0);
+
+	_vehicle setDamage 1;
+	_vehicle setDamage 0;
+	_vehicle setDamage 1;
+	_vehicle enableSimulation false;
+
+};
 mf_remote_repair = {
 	private "_vehicle";
 	_vehicle = objectFromNetId (_this select 0);

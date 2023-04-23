@@ -10,7 +10,7 @@ private ["_group", "_pos", "_nbUnits", "_unitTypes", "_uPos", "_unit"];
 
 _group = _this select 0;
 _pos = _this select 1;
-_nbUnits = param [2, 7, [0]];
+_nbUnits = param [9, 10, [0]];
 _radius = param [3, 10, [0]];
 
 _unitTypes =
@@ -44,41 +44,32 @@ for "_i" from 1 to _nbUnits do
 
 	switch (true) do
 	{
-		// Grenadier every 3 units, starting from #2
-		case ((_i + 4) % 3 == 0):
+		// Grenadier every 3 units
+		case (_i % 3 == 0):
 		{
-			_unit addUniform "U_B_CombatUniform_mcam_vest";
-			_unit addMagazine "1Rnd_HE_Grenade_shell";
-			_unit addWeapon "arifle_TRG21_GL_F";
-			_unit addMagazine "1Rnd_HE_Grenade_shell";
-			_unit addMagazine "1Rnd_HE_Grenade_shell";
+			_unit addUniform "U_I_C_Soldier_Para_2_F";
+			_unit addBackpack "B_Kitbag_rgr";
+			_unit addWeapon "arifle_TRG20_F";
+			_unit addMagazine "Titan_AA";
+			_unit addWeapon "launch_B_Titan_tna_F";
+			_unit addMagazine "Titan_AA";
+			_unit addMagazine "Titan_AA";
 		};
-		// PCML every 6 units, starting from #6
-		case (_i % 6 == 0):
+		// RPG every 7 units, starting from second one
+		case ((_i + 5) % 7 == 0):
 		{
-			_unit addUniform "U_B_CombatUniform_mcam_tshirt";
+			_unit addUniform "U_I_C_Soldier_Para_5_F";
 			_unit addBackpack "B_Kitbag_mcamo";
 			_unit addWeapon "arifle_TRG20_F";
-			_unit addMagazine "NLAW_F";
-			_unit addWeapon "launch_NLAW_F";
-			_unit addMagazine "NLAW_F";
-			_unit addMagazine "NLAW_F";
-		};
-		// RPG-42 every 6 units, starting from #3
-		case ((_i + 3) % 6 == 0):
-		{
-			_unit addUniform "U_B_CombatUniform_mcam_tshirt";
-			_unit addBackpack "B_Kitbag_mcamo";
-			_unit addWeapon "arifle_TRG20_F";
-			_unit addMagazine "RPG32_F";
-			_unit addWeapon "launch_RPG32_F";
-			_unit addMagazine "RPG32_F";
-			_unit addMagazine "RPG32_F";
+			_unit addMagazine "Titan_AT";
+			_unit addWeapon "launch_I_Titan_short_F";
+			_unit addMagazine "Titan_AT";
+			_unit addMagazine "Titan_AT";
 		};
 		// Rifleman
 		default
 		{
-			_unit addUniform "U_B_CombatUniform_mcam";
+			_unit addUniform "U_O_GhillieSuit";
 
 			if (_unit == leader _group) then
 			{
@@ -100,6 +91,7 @@ for "_i" from 1 to _nbUnits do
 	_unit spawn refillPrimaryAmmo;
 	_unit call setMissionSkill;
 	_unit addEventHandler ["Killed", server_playerDied];
+	_unit call setEliteSkill;
 };
 
 [_group, _pos] call defendArea;

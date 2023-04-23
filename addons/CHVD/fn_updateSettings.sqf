@@ -6,6 +6,7 @@ switch (true) do
 		CHVD_targetObj = CHVD_carObj;
 		CHVD_targetTerrain = CHVD_carTerrain;
 	};
+	//case (cameraOn isKindOf "Plane_Base_F" || cameraOn isKindOf "Helicopter_Base_H" || cameraOn isKindOf "Heli_Attack_01_base_F" || cameraOn isKindOf "Heli_Attack_02_base_F" || cameraOn isKindOf "Heli_light_03_base_F" || (animationState cameraOn) select [0,12] == "halofreefall"):
 	case (cameraOn isKindOf "Air" || (animationState cameraOn) select [0,12] == "halofreefall"):
 	{
 		CHVD_targetView = CHVD_air;

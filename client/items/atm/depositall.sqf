@@ -1,9 +1,9 @@
 // ******************************************************************************************
 // * This project is licensed under the GNU Affero GPL v3. Copyright © 2014 A3Wasteland.com *
 // ******************************************************************************************
-//	@file Name: depositall.sqf
-//	@file Author: Demonicpenguin
-//	@file Function: mf_items_atm_depositall
+//	@file Name: deposit.sqf
+//	@file Author: AgentRev
+//	@file Function: mf_items_atm_deposit
 
 #include "gui_defines.hpp"
 
@@ -11,22 +11,24 @@
 #define ERR_MAX_BALANCE "Your account has reached the maximum balance."
 
 disableSerialization;
-private ["_dialog", "_input", "_amount", "_balance", "_maxBalance"];
+private ["_dialog", "_input", "_amount", "_balance", "_maxBalance", "_stack"];
 
 _dialog = findDisplay AtmGUI_IDD;
 
 if (isNull _dialog) exitWith {};
 
+_stack = player getVariable ["cmoney", 0];
 _input = _dialog displayCtrl AtmAmountInput_IDC;
-_amount = player getVariable ["cmoney", 0];
+_input ctrlSetText (_stack call fn_numToStr);
+_amount = _input call mf_verify_money_input;
 
 if (_amount < 1) exitWith {};
 
-//if (player getVariable ["cmoney", 0] < _amount) exitWith
-//{
-//	[ERR_NOT_ENOUGH_FUNDS, 5] call mf_notify_client;
-//	playSound "FD_CP_Not_Clear_F";
-//};
+if (_stack < _amount) exitWith
+{
+	[ERR_NOT_ENOUGH_FUNDS, 5] call mf_notify_client;
+	playSound "FD_CP_Not_Clear_F";
+};
 
 _balance = player getVariable ["bmoney", 0];
 _maxBalance = ["A3W_atmMaxBalance", 1000000] call getPublicVar;

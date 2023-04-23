@@ -16,7 +16,6 @@ if (_uid call isAdmin) then
 	{
 		adminPlayerMarkers = true;
 		hint "Player Markers ON";
-		["leadermarkers", "enabled"] call notifyAdminMenu;
 	}
 	else
 	{

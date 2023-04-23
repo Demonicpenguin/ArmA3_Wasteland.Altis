@@ -10,7 +10,7 @@
 
 // Check if both players are on the same side, and that our player is BLUFOR or OPFOR, or that both are in the same group
 #define FRIENDLY_CONDITION ([_x, player] call A3W_fnc_isFriendly)
-#define DISABLE_ALL_BUTTONS format ["{ ctrlEnable [_x, false] } forEach %1;", [respawn_Random_Button, respawn_Spawn_Button, respawn_Locations_Type, respawn_Locations_List, respawn_Preload_Checkbox, respawn_GroupMgmt_Button]]
+#define DISABLE_ALL_BUTTONS format ["{ ctrlEnable [_x, false] } forEach %1;", [respawn_Random_Button, Switch_Team_Button, respawn_Spawn_Button, respawn_Locations_Type, respawn_Locations_List, respawn_Preload_Checkbox, respawn_GroupMgmt_Button, Halo_Spawn_Button]]
 #define TOWN_SPAWN_COOLDOWN (["A3W_townSpawnCooldown", 5*60] call getPublicVar)
 #define SPAWN_BEACON_COOLDOWN (["A3W_spawnBeaconCooldown", 5*60] call getPublicVar)
 #define BEACON_CHECK_RADIUS 250
@@ -21,15 +21,19 @@ waitUntil {!isNil "bis_fnc_init" && {bis_fnc_init}};
 createDialog "RespawnSelectionDialog";
 _display = uiNamespace getVariable ["RespawnSelectionDialog", displayNull];
 _display displayAddEventHandler ["KeyDown", "(respawnDialogActive && _this select 1 == 1)"];
+_switchTeamButton = _display displayCtrl Switch_Team_Button;
+_switchTeamButton ctrlShow false;
 _respawnText = _display displayCtrl respawn_Content_Text;
 _missionUptimeText = _display displayCtrl respawn_MissionUptime_Text;
 
 _randomButton = _display displayCtrl respawn_Random_Button;
+_randomHaloButton = _display displayCtrl Halo_Spawn_Button;
 //_townsButton = _display displayCtrl respawn_LoadTowns_Button;
 //_beaconsButton = _display displayCtrl respawn_LoadBeacons_Button;
 _spawnButton = _display displayCtrl respawn_Spawn_Button;
 _spawnButton ctrlEnable false;
 ctrlSetFocus _randomButton;
+ctrlSetFocus _randomHaloButton;
 
 _spawnButton ctrlSetText "Loading...";
 
@@ -39,6 +43,24 @@ _locMap = _display displayCtrl respawn_Locations_Map;
 
 _townSpawnCooldown = TOWN_SPAWN_COOLDOWN;
 _spawnBeaconCooldown = SPAWN_BEACON_COOLDOWN;
+
+//Add team switch button
+if(playerSide in [BLUFOR, OPFOR] && !isNil "pvar_teamSwitchList")then{
+	_switchTeamButton ctrlShow true;
+	teamSwitchCode = {
+	  [] spawn{
+	    _uid = getPlayerUID player;
+	    if(["You will return to the lobby and be locked to Independent. Do you wish to continue?", "Confirm", true, true] call BIS_fnc_guiMessage)then{
+		  pvar_teamSwitchUnlock = _uid;
+		  publicVariableServer "pvar_teamSwitchUnlock";
+		  pvar_teamSwitchLock = [_uid, INDEPENDENT];
+		  publicVariableServer "pvar_teamSwitchLock";
+	      endMission "LOSER";
+	    };
+	  };
+	};
+	_switchTeamButton buttonSetAction "call teamSwitchCode";
+};
 
 _side = switch (playerSide) do
 {
@@ -52,6 +74,7 @@ respawnDialogActive = true;
 
 //buttonSetAction [respawn_Random_Button, format ["%1 [%2,0] execVM 'client\functions\spawnAction.sqf'", _disableAllButtons, respawn_Random_Button]];
 _randomButton buttonSetAction format ["%1 [%2,[0,nil]] execVM 'client\functions\spawnAction.sqf'", DISABLE_ALL_BUTTONS, respawn_Random_Button];
+_randomHaloButton buttonSetAction format ["%1 [%2,[3,nil]] execVM 'client\functions\spawnAction.sqf'", DISABLE_ALL_BUTTONS, Halo_Spawn_Button];
 (_display displayCtrl respawn_Preload_Checkbox) cbSetChecked (profileNamespace getVariable ["A3W_preloadSpawn", true]);
 
 #include "respawn_functions.sqf"

@@ -1,0 +1,2 @@
+copyToClipboard "http://mechmodels.com/mas/downloads/ah64v2/manual/ah64dv2_manual.html";
+hint "Flight Manual Link has been copied to clipboard, now press Alt Tab together to drop to desktop, open browser and paste the link in address bar Ctrl v";

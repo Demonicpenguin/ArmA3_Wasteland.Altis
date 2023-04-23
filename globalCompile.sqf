@@ -14,8 +14,8 @@ _DEBUG = format ["%1", _this select 0];
 // Compile a function from a file.
 // if in debug mode, the function will be dyncamically compiled every call.
 // if not in debug mode, the function will be compileFinal'd
-// example: my_fnc_name = ["path\to\folder", "my_fnc.sqf"] call mf_compile;
-// example: my_fnc_name = ["path\to\folder\my_fnc.sqf"] call mf_compile;
+// example: my_fnc_name = ["path/to/folder", "my_fnc.sqf"] call mf_compile;
+// example: my_fnc_name = ["path/to/folder/my_fnc.sqf"] call mf_compile;
 // later in the code you can simply use call my_fnc_name;
 // you can also pass raw code to get it compileFinal'd
 // example: my_fnc_name = {diag_log "hey"} call mf_compile;
@@ -25,16 +25,17 @@ mf_compile = compileFinal
 	_path = "";
 	_isDebug = ' + _DEBUG + ';
 
-	switch (true) do {
-		case (_this isEqualType ""): {
+	switch (toUpper typeName _this) do {
+		case "STRING": {
 			_path = _this;
 		};
-		case (_this isEqualType []): {
-			_path = _this joinString "\";
+		case "ARRAY": {
+			_path = format["%1\%2", _this select 0, _this select 1];
 		};
-		case (_this isEqualType {}): {
-			_code = str _this;
-			_code = _code select [1, count _code - 2];
+		case "CODE": {
+			_code = toArray str _this;
+			_code set [0, (toArray " ") select 0];
+			_code set [count _code - 1, (toArray " ") select 0];
 		};
 	};
 
@@ -43,14 +44,14 @@ mf_compile = compileFinal
 			compile format ["call compile preProcessFileLineNumbers ""%1""", _path]
 		} else {
 			compileFinal preProcessFileLineNumbers _path
-		}
+		};
 	} else {
 		if (_isDebug) then {
-			_this
+			compile toString _code
 		} else {
-			compileFinal _code
-		}
-	}
+			compileFinal toString _code
+		};
+	};
 ');
 
 // Simple command I use to make initialization scripts clean and simple.
@@ -151,8 +152,14 @@ vehicleDammagedEvent = [_serverFunc, "vehicleDammagedEvent.sqf"] call mf_compile
 vehicleEngineEvent = [_serverFunc, "vehicleEngineEvent.sqf"] call mf_compile;
 vehicleHandleDamage = [_serverFunc, "vehicleHandleDamage.sqf"] call mf_compile;
 vehicleHitTracking = [_serverFunc, "vehicleHitTracking.sqf"] call mf_compile;
+CrateSmoke = "addons\scripts\CrateSmoke.sqf" call mf_compile;
+CrateFlare = "addons\scripts\CrateFlare.sqf" call mf_compile;
+Soul_AutoLoad = "addons\scripts\Soul_AutoLoad.sqf" call mf_compile;
+A3W_fnc_aj_s_refreshZeus = "addons\aj\zeus\fn_aj_s_refreshZeus.sqf" call mf_compile;  //name has has to started with A3W_fnc_ 
 
 call compile preprocessFileLineNumbers "server\functions\mf_remote.sqf";
+
+A3W_fnc_cleanupObjects = [_serverFunc, "cleanupObjects.sqf"] call mf_compile;
 
 "pvar_switchMoveGlobal" addPublicVariableEventHandler { ((_this select 1) select 0) switchMove ((_this select 1) select 1) };
 "pvar_detachTowedObject" addPublicVariableEventHandler { (_this select 1) spawn detachTowedObject };

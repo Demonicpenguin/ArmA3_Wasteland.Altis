@@ -7,9 +7,17 @@
 _markers =
 [
 	["Legend:", "EmptyIcon", "ColorWhite", [1,1]],
-
+	//["Website: GreatMonkeyGaming.com", "EmptyIcon", "ColorWhite", [1,1]],
+	["Discord: https://discord.gg/XBJrA68", "EmptyIcon", "ColorWhite", [1,1]],
+	["Teamspeak: rawus.teamspeak3.com", "EmptyIcon", "ColorWhite", [1,1]],	
 	["GS - General Store", "mil_dot", "ColorBlue", [1,1]],
-	["VS - Vehicle Store", "mil_dot", "ColorOrange", [1,1]]
+	["VS - Vehicle Store", "mil_dot", "ColorOrange", [1,1]],
+	["H - Halo ", "mil_dot", "ColorYellow", [1,1]],	
+	["GOM Resupply Point", "mil_dot", "ColorPink", [1,1]],
+	["GOM Air Resupply System", "mil_dot", "ColorGreen", [1,1]],	
+	["Boat Spawn", "mil_dot", "ColorBrown", [1,1]],
+	["Change Ownership", "o_service", "ColorKhaki", [1,1]],	
+	["Resupply Vehicle", "o_service", "ColorBlue", [1,1]]	
 ];
 
 
@@ -45,5 +53,6 @@ _legendTop = _legendMarginY + (_markerSpacing * (count _markers - 1));
 	_marker setMarkerColorLocal _color;
 	_marker setMarkerSizeLocal _size;
 	_marker setMarkerShapeLocal "ICON";
+	_marker setMarkerSize [0.5,0.5];	
 
 } forEach _markers;

@@ -32,6 +32,9 @@ _vehArray = switch (_switch) do
 	case 3: { call helicoptersArray };
 	case 4: { call planesArray };
 	case 5: { call boatsArray };
+	case 6: { call uavArray };
+	case 7: { call subsArray };
+	case 8: { call shipsArray };		
 	default { [] };
 };
 
@@ -53,7 +56,7 @@ _playerSideNum = switch (playerSide) do
 	{
 		_vehCfg = configFile >> "CfgVehicles" >> _vehClass;
 
-		if (["UGV_01_base_F","UGV_02_Base_F","UAV_01_base_F","UAV_02_base_F","UAV_06_base_F"] findIf {_vehClass isKindOf _x} == -1 || {getNumber (_vehCfg >> "side") in [3,_playerSideNum]}) then
+		if ({_vehClass isKindOf _x} count ["UGV_01_base_F","UAV_02_base_F"] == 0 || {getNumber (_vehCfg >> "side") == _playerSideNum}) then
 		{
 			_vehPicture = getText (configFile >> "CfgVehicles" >> _vehClass >> "picture");
 			_vehlistIndex = _vehlist lbAdd format ["%1", [_vehName, getText (_vehCfg >> "displayName")] select (_vehName == "")];

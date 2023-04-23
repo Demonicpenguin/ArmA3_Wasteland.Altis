@@ -6,7 +6,7 @@
 
 params [["_container",objNull,[objNull]], ["_subcontainer",false,[false]]];
 
-if (isNull _container) exitWith { [[],[],[],[]] };
+if (isNull _container || _container isKindOf "Land_RepairDepot_01_green_F" || _container isKindOf "CargoNet_01_barrels_F" ) exitWith { [[],[],[],[]] };
 
 private _weapons = [];
 private _magsCargo = magazinesAmmoCargo _container;

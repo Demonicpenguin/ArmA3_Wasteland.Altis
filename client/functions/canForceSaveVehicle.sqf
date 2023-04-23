@@ -4,6 +4,8 @@
 //	@file Name: canForceSaveVehicle.sqf
 //	@file Author: AgentRev
 
-alive _this && {cameraOn distance _this <= (sizeOf typeOf _this / 2) max 2} &&
-{_this isKindOf "AllVehicles" && !(_this isKindOf "Man" || _this isKindOf "StaticWeapon") &&
-{_this getVariable ["A3W_purchasedVehicle", false] || _this getVariable ["A3W_missionVehicle", false]}}
+private _veh = cursorTarget;
+
+alive _veh && {player distance _veh <= (sizeOf typeOf _veh / 2) max 2} &&
+{_veh isKindOf "AllVehicles" && !(_veh isKindOf "Man" || _veh isKindOf "StaticWeapon") &&
+{_veh getVariable ["A3W_purchasedVehicle", false] || _veh getVariable ["A3W_missionVehicle", false]}}

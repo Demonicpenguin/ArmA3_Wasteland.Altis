@@ -26,6 +26,7 @@ publicVariable "currentInvites";
 	["pvar_removeNegativeScore", { PVAL call removeNegativeScore }],
 	["pvar_convertTerritoryOwner", { PVAL call convertTerritoryOwner }],
 	["pvar_enableSimulationGlobal", { PVAL call fn_enableSimulationGlobal }],
+	["pvar_hideObjectGlobal", { objectFromNetId (PVAL select 0) hideObjectGlobal (PVAL select 1) }],	
 	["pvar_enableSimulationServer", { PVAL call fn_enableSimulationServer }],
 	["pvar_parachuteLiftedVehicle", { PVAL spawn parachuteLiftedVehicle }],
 	["pvar_spawnStoreObject", { PVAL call spawnStoreObject }],
@@ -39,5 +40,6 @@ publicVariable "currentInvites";
 	["pvar_manualObjectDelete", { if (!isNil "fn_manualObjectDelete") then { PVAL call fn_manualObjectDelete } }],
 	["pvar_manualVehicleSave", { if (!isNil "fn_manualVehicleSave") then { PVAL call fn_manualVehicleSave } }],
 	["pvar_waitUntilBagTaken", { PVAL spawn waitUntilBagTaken }],
-	["pvar_dropPlayerItems", { PVAL spawn dropPlayerItems }]
+	["pvar_dropPlayerItems", { PVAL spawn dropPlayerItems }],
+	["pvar_isAdminInvisible", { PVAL call fn_invis}]
 ];
