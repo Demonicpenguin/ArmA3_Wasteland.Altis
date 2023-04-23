@@ -40,15 +40,15 @@ _onScreenTime = 8; 		//how long one role should stay on screen. Use value from 0
 sleep 60; //Wait in seconds before the credits start after player IS ingame
  
 _role1 = "Welcome to";
-_role1names = ["lace server name here Altis"];
+_role1names = ["Jeremy's A3 Wasteland Server"];
 _role2 = "Occasionally Admin ran ZEUS Missions";
 _role2names = ["and ZEUS Enhanced Standard Missions"];
-_role3 = "Server restarts every 6 hours";
-_role3names = ["0600H, 1200H, 1800H, 0000H "];
+_role3 = "Server restarts every 24 hours";
+_role3names = ["or whenever an admin decides"];
 _role4 = "Visit our website @";
 _role4names = ["Comminsoon"];
-_role5 = "TS3 Server:";
-_role5names = ["rawus.teamspeak3.com"];
+_role5 = "Discord:";
+_role5names = ["comming soong :)"];
 _role6 = "Useful Commands";
 _role6names = ["CTRL+R-Mag Repacker, END and INSERT - Volume Control and Earplugs, H-Holster, 0 Auto Run"];
 _role7 = "Custom Missions";

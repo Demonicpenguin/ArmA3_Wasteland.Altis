@@ -44,7 +44,7 @@ class TOParmaInfoD
 			idc = TOParmaInfo_Server_Info;
 			type = CT_STRUCTURED_TEXT;
 			size = 0.040;
-			text = "place server name here";
+			text = "Jeremy's A3 Wasteland Server";
 			x = "18 * (((safezoneW / safezoneH) min 1.2) / 40)";
 			y = "0 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
 			w = "12 * (((safezoneW / safezoneH) min 1.2) / 40)";
@@ -58,7 +58,7 @@ class TOParmaInfoD
 			idc = TOParmaInfo_General_Info_BG;
 			type = CT_STRUCTURED_TEXT;
 			size = 0.030;
-			text = "Website: www.rawgaming.eu/ Forums: www.rawgaming.forum TeamSpeak: rawus.teamspeak3.com Manuals: Ship_Instruction_Manual";
+			text = "Jeremy's A3 Wasteland Server";
 			x = "0 * (((safezoneW / safezoneH) min 1.2) / 40)";
 			y = "1.1 * ((((safezoneW / safezoneH) min 1.2) / 1.2) / 25)";
 			w = "30 * (((safezoneW / safezoneH) min 1.2) / 40)";

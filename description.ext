@@ -40,7 +40,6 @@ briefing = 0; // if 0, skip Continue button
 #define A3W_UICOLOR_B  0.96 // default = 0.96
 
 //Dialog includes
-#include "HALs\Addons\killfeed\config.hpp"
 #include "client\gui_base.hpp"
 #include "addons\R3F_LOG\desc_include.h"
 #include "client\systems\ui_toolkit.hpp"
@@ -153,8 +152,7 @@ class CfgFunctions
 	#include "addons\CHVD\CfgFunctions.hpp"
 	#include "addons\GOM\functions\GOM_fnc_functions.hpp"
 	#include "addons\Vcom\cfgFunctions.hpp"
-    #include "LARs\override_VA_templates\functions\functions.hpp"	
-	#include "HALs\Addons\killfeed\functions.cpp"
+    #include "LARs\override_VA_templates\functions\functions.hpp"
 
 	//AJ Begin
 	class armajunkies

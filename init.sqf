@@ -68,8 +68,6 @@ if (!isDedicated) then
 			removeAllWeapons player;
 			client_initEH = player addEventHandler ["Respawn", { removeAllWeapons (_this select 0) }];
 			
-			[] spawn HALs_killfeed_fnc_initModule;
-			
 			// Reset group & side
 			[player] joinSilent createGroup playerSide;
 
