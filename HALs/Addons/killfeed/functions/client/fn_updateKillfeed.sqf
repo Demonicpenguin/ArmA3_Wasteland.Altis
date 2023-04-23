@@ -26,7 +26,7 @@ private _ctrls = _ctrlGroup getVariable ["ctrls", []];
 
 // Create Killfeed message
 private _ctrl = _display ctrlCreate ["RscStructuredText", -1, _ctrlGroup];
-_ctrl ctrlSetFontHeight (((2.2 / 108) * safeZoneH) / (((((safeZoneW / safeZoneH) min 1.2) / 1.2) / 25) * 1));
+_ctrl ctrlSetFontHeight (((2.2 / 108) * safeZoneH) / (((((safeZoneW / safeZoneH) min 1.2) / 1.2) / 25) * .25));
 _ctrl ctrlSetStructuredText parseText format ["<t align='left' shadow='2' shadowColor='#ff0000'>%1</t>", _message];
 _ctrl ctrlSetPositionW (ctrlTextWidth _ctrl + pixelW * 5);
 _ctrl ctrlSetPositionH ctrlTextHeight _ctrl;
